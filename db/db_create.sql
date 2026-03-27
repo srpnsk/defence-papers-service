@@ -1,6 +1,8 @@
 CREATE TABLE person (
     id SERIAL PRIMARY KEY,
-    full_name TEXT NOT NULL
+    name varchar(32) NOT NULL,
+    first_name varchar(32) NOT NULL, -- фамилия
+    last_name varchar(32) NOT NULL, -- отчество
 );
 
 CREATE TABLE thesis (
