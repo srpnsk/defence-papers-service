@@ -162,20 +162,11 @@ CREATE TABLE IF NOT EXISTS public.ds_event (
     present_online integer DEFAULT 0
 );
 
-BEGIN;
-
 -- 1. Справочник специальностей (решаем проблему 3НФ)
 CREATE TABLE IF NOT EXISTS public.specialty (
     id bigserial PRIMARY KEY,
     code varchar(32) UNIQUE NOT NULL,
     name text NOT NULL
-);
-
--- 2. Справочник ученых степеней (необязательно, но полезно для чистоты)
-CREATE TABLE IF NOT EXISTS public.academic_degree (
-    id bigserial PRIMARY KEY,
-    short_name varchar(32) UNIQUE NOT NULL, -- к.ф.-м.н.
-    full_name text NOT NULL
 );
 
 -- 3. Обновленная таблица Person (ссылаемся на справочники)
@@ -222,7 +213,5 @@ ALTER TABLE public.thesis
 ALTER TABLE public.thesis 
     ALTER COLUMN planned_defence_date TYPE date 
     USING (NULL); -- В реальной жизни тут нужен был бы сложный парсинг текста в дату
-
-COMMIT;
 
 COMMIT;
