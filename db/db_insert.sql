@@ -1,3 +1,12 @@
+-- =====================================================
+-- ИСПРАВЛЕННЫЙ ФАЙЛ db_insert.sql
+-- (исправлены:
+--  1. NULL в science_branch таблицы thesis
+--  2. NULL в address таблицы organization для НИЯУ МИФИ и НИИ ЛиУ
+--  3. Синтаксическая ошибка в блоке DO $$
+--  4. Ошибка с подзапросами внутри VALUES для вставки достижений)
+-- =====================================================
+
 INSERT INTO public.organization (full_name, short_name, address) VALUES
 ('Национальный исследовательский университет «КиС»', 'НИУ КиС', '111666, г. Кошкинск, Валерьяновая ул., д. 13'),
 ('Институт изучения кошачьих повадок РАН', 'ИИКП РАН', '666111, г. Мурмурск, Хвостатая ул., д. 2/1'),
@@ -63,6 +72,7 @@ VALUES (
     20
 );
 
+-- ===== ИСПРАВЛЕНО: science_branch = 'Физико-математические науки' =====
 INSERT INTO public.thesis (
     applicant_id, council_id, title, science_branch, target_degree, 
     planned_defence_date, defence_date_time, specialty_id
@@ -71,12 +81,13 @@ VALUES (
     (SELECT id FROM public.person WHERE last_name = 'Иванов' AND first_name = 'Иван'),
     (SELECT id FROM public.dissertation_council WHERE number = '1.01'),
     '"Гидродинамика движения заключительной трети хвоста полосатых котиков в условиях космической невесомости"',
-    NULL,
+    'Физико-математические науки',
     'кандидата котовьих наук',
     '2026-09-01',
     '2026-09-01 15:00:00+00', 
     (SELECT id FROM public.specialty WHERE code = '6.6.6')
 );
+-- =====================================================================
 
 INSERT INTO public.thesis_official_opponent (thesis_id, person_id, order_index) VALUES
 (
@@ -139,10 +150,11 @@ VALUES (
     false
 );
 
-
+-- ===== ИСПРАВЛЕНО: address = '—' вместо NULL =====
 INSERT INTO public.organization (full_name, short_name, address) VALUES
-('НИЯУ МИФИ', 'НИЯУ МИФИ', NULL),
-('НИИ ЛиУ', 'НИИ ЛиУ', NULL);
+('НИЯУ МИФИ', 'НИЯУ МИФИ', '—'),
+('НИИ ЛиУ', 'НИИ ЛиУ', '—');
+-- ================================================
 
 INSERT INTO public.specialty (code, name) VALUES
 ('14.14.14', 'Физика кошачьих конечностей'),
@@ -291,6 +303,7 @@ VALUES (
     2022
 );
 
+-- ===== ИСПРАВЛЕННЫЙ БЛОК DO $$ =====
 DO $$
 DECLARE
     thesis_id_var bigint;
@@ -326,10 +339,11 @@ BEGIN
     WHERE person_id = (SELECT id FROM public.person WHERE last_name = 'Иванов' AND first_name = 'Иван')
     AND text_content LIKE '%Программа для расчёта%' LIMIT 1;
     IF achievement_id_var IS NOT NULL THEN
-        INSERT INTO public.thesis_achievement (thesis_id, achievement_id, is_main, false, NULL)
+        INSERT INTO public.thesis_achievement (thesis_id, achievement_id, is_main, author_contribution)
         VALUES (thesis_id_var, achievement_id_var, false, NULL);
     END IF;
 END $$;
+-- ==================================
 
 INSERT INTO public.thesis_content_block (thesis_id, block_type, content, order_index)
 VALUES 
@@ -492,45 +506,57 @@ VALUES (
     2021
 );
 
+-- ===== ИСПРАВЛЕННАЯ ВСТАВКА ДЛЯ ЛЬВОВА =====
 INSERT INTO public.achievement (person_id, type, text_content, year)
-SELECT id, 1, text_content, year FROM (VALUES
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Котов К.К. Кошачье поведение в присутствии собак // Наши коты. 2025. Т. 1. С. 100--110.', 2025),
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Котов К.К. Собачье поведение в присутствии кошек // Наши собаки. 2024. Т. 10. С. 10--15.', 2024),
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Песов П.П. Кошки и собаки // Наши коты. 2023. Т. 5. С. 21--25.', 2023),
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Песов П.П. Собаки и кошки // Наши собаки. 2022. Т. 21. С. 1112.', 2022),
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Котов К.К., Песов П.П. Несколько слов про кошек и собак // Домашние любимцы. 2021. Т. 12. С. 01--13.', 2021),
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Мышов М.М. Собаки и мыши // Наши собаки. 2021. Т. 2. С. 11--12.', 2021),
-    ((SELECT id FROM public.person WHERE last_name = 'Львов'), 'Львов Л.Л., Мышов М.М. Мыши и собаки // Наши мыши. 2021. Т. 6. С. 91--112.', 2021)
-) AS t(person_id, text_content, year);
+SELECT p.id, 1, t.text_content, t.year
+FROM (VALUES
+    ('Львов', 'Львов Л.Л., Котов К.К. Кошачье поведение в присутствии собак // Наши коты. 2025. Т. 1. С. 100--110.', 2025),
+    ('Львов', 'Львов Л.Л., Котов К.К. Собачье поведение в присутствии кошек // Наши собаки. 2024. Т. 10. С. 10--15.', 2024),
+    ('Львов', 'Львов Л.Л., Песов П.П. Кошки и собаки // Наши коты. 2023. Т. 5. С. 21--25.', 2023),
+    ('Львов', 'Львов Л.Л., Песов П.П. Собаки и кошки // Наши собаки. 2022. Т. 21. С. 1112.', 2022),
+    ('Львов', 'Львов Л.Л., Котов К.К., Песов П.П. Несколько слов про кошек и собак // Домашние любимцы. 2021. Т. 12. С. 01--13.', 2021),
+    ('Львов', 'Львов Л.Л., Мышов М.М. Собаки и мыши // Наши собаки. 2021. Т. 2. С. 11--12.', 2021),
+    ('Львов', 'Львов Л.Л., Мышов М.М. Мыши и собаки // Наши мыши. 2021. Т. 6. С. 91--112.', 2021)
+) AS t(last_name, text_content, year)
+CROSS JOIN LATERAL (SELECT id FROM public.person WHERE last_name = t.last_name LIMIT 1) p;
+-- =============================================
 
+-- ===== ИСПРАВЛЕННАЯ ВСТАВКА ДЛЯ ТИГРОВА =====
 INSERT INTO public.achievement (person_id, type, text_content, year)
-SELECT id, 1, text_content, year FROM (VALUES
-    ((SELECT id FROM public.person WHERE last_name = 'Тигров'), 'Тигров Т.Т., Котов К.К. Кошачье поведение в присутствии собак // Наши коты. 2025. Т. 1. С. 100--110.', 2025),
-    ((SELECT id FROM public.person WHERE last_name = 'Тигров'), 'Тигров Т.Т., Котов К.К. Собачье поведение в присутствии кошек // Наши собаки. 2024. Т. 10. С. 10--15.', 2024),
-    ((SELECT id FROM public.person WHERE last_name = 'Тигров'), 'Тигров Т.Т., Песов П.П. Кошки и собаки // Наши коты. 2023. Т. 5. С. 21--25.', 2023),
-    ((SELECT id FROM public.person WHERE last_name = 'Тигров'), 'Тигров Т.Т., Песов П.П. Собаки и кошки // Наши собаки. 2022. Т. 21. С. 1112.', 2022),
-    ((SELECT id FROM public.person WHERE last_name = 'Тигров'), 'Тигров Т.Т., Котов К.К., Песов П.П. Несколько слов про кошек и собак // Домашние любимцы. 2021. Т. 12. С. 01--13.', 2021),
-    ((SELECT id FROM public.person WHERE last_name = 'Тигров'), 'Тигров Т.Т., Мышов М.М. Собаки и мыши // Наши собаки. 2021. Т. 2. С. 11--12.', 2021)
-) AS t(person_id, text_content, year);
+SELECT p.id, 1, t.text_content, t.year
+FROM (VALUES
+    ('Тигров', 'Тигров Т.Т., Котов К.К. Кошачье поведение в присутствии собак // Наши коты. 2025. Т. 1. С. 100--110.', 2025),
+    ('Тигров', 'Тигров Т.Т., Котов К.К. Собачье поведение в присутствии кошек // Наши собаки. 2024. Т. 10. С. 10--15.', 2024),
+    ('Тигров', 'Тигров Т.Т., Песов П.П. Кошки и собаки // Наши коты. 2023. Т. 5. С. 21--25.', 2023),
+    ('Тигров', 'Тигров Т.Т., Песов П.П. Собаки и кошки // Наши собаки. 2022. Т. 21. С. 1112.', 2022),
+    ('Тигров', 'Тигров Т.Т., Котов К.К., Песов П.П. Несколько слов про кошек и собак // Домашние любимцы. 2021. Т. 12. С. 01--13.', 2021),
+    ('Тигров', 'Тигров Т.Т., Мышов М.М. Собаки и мыши // Наши собаки. 2021. Т. 2. С. 11--12.', 2021)
+) AS t(last_name, text_content, year)
+CROSS JOIN LATERAL (SELECT id FROM public.person WHERE last_name = t.last_name LIMIT 1) p;
+-- =============================================
 
+-- ===== ИСПРАВЛЕННАЯ ВСТАВКА ДЛЯ ЯГУАРОВОЙ =====
 INSERT INTO public.achievement (person_id, type, text_content, year)
-SELECT id, 1, text_content, year FROM (VALUES
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Котов К.К. Кошачье поведение в присутствии собак // Наши коты. 2025. Т. 1. С. 100--110.', 2025),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Котов К.К. Собачье поведение в присутствии кошек // Наши собаки. 2025. Т. 10. С. 10--15.', 2025),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Песов П.П. Кошки и собаки // Наши коты. 2024. Т. 5. С. 21--25.', 2024),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Песов П.П. Собаки и кошки // Наши собаки. 2024. Т. 21. С. 1112.', 2024),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Котов К.К., Песов П.П. Несколько слов про кошек и собак // Домашние любимцы. 2024. Т. 12. С. 01--13.', 2024),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Мышов М.М. Собаки и мыши // Наши собаки. 2023. Т. 2. С. 11--12.', 2023),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Очень большие кошки // Разноразмерные кошки. 2023. Т. 1. С. 11--12.', 2023),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Просто большие кошки // Разноразмерные кошки. 2023. Т. 2. С. 13--14.', 2023),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Большие кошки // Разноразмерные кошки. 2022. Т. 3. С. 15--16.', 2022),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Большие кошки // Разноразмерные кошки. 2022. Т. 4. С. 15--16.', 2022),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Кошки больше обычных // Разноразмерные кошки. 2022. Т. 5. С. 17--18.', 2022),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Обычные кошки // Разноразмерные кошки. 2021. Т. 6. С. 19--20.', 2021),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Некрупные кошки // Разноразмерные кошки. 2021. Т. 7. С. 21--22.', 2021),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Небольшие кошки // Разноразмерные кошки. 2021. Т. 8. С. 23--24.', 2021),
-    ((SELECT id FROM public.person WHERE last_name = 'Ягуарова'), 'Ягуарова Я.Я., Маленькие кошки // Разноразмерные кошки. 2021. Т. 9. С. 25--26.', 2021)
-) AS t(person_id, text_content, year);
+SELECT p.id, 1, t.text_content, t.year
+FROM (VALUES
+    ('Ягуарова', 'Ягуарова Я.Я., Котов К.К. Кошачье поведение в присутствии собак // Наши коты. 2025. Т. 1. С. 100--110.', 2025),
+    ('Ягуарова', 'Ягуарова Я.Я., Котов К.К. Собачье поведение в присутствии кошек // Наши собаки. 2025. Т. 10. С. 10--15.', 2025),
+    ('Ягуарова', 'Ягуарова Я.Я., Песов П.П. Кошки и собаки // Наши коты. 2024. Т. 5. С. 21--25.', 2024),
+    ('Ягуарова', 'Ягуарова Я.Я., Песов П.П. Собаки и кошки // Наши собаки. 2024. Т. 21. С. 1112.', 2024),
+    ('Ягуарова', 'Ягуарова Я.Я., Котов К.К., Песов П.П. Несколько слов про кошек и собак // Домашние любимцы. 2024. Т. 12. С. 01--13.', 2024),
+    ('Ягуарова', 'Ягуарова Я.Я., Мышов М.М. Собаки и мыши // Наши собаки. 2023. Т. 2. С. 11--12.', 2023),
+    ('Ягуарова', 'Ягуарова Я.Я., Очень большие кошки // Разноразмерные кошки. 2023. Т. 1. С. 11--12.', 2023),
+    ('Ягуарова', 'Ягуарова Я.Я., Просто большие кошки // Разноразмерные кошки. 2023. Т. 2. С. 13--14.', 2023),
+    ('Ягуарова', 'Ягуарова Я.Я., Большие кошки // Разноразмерные кошки. 2022. Т. 3. С. 15--16.', 2022),
+    ('Ягуарова', 'Ягуарова Я.Я., Большие кошки // Разноразмерные кошки. 2022. Т. 4. С. 15--16.', 2022),
+    ('Ягуарова', 'Ягуарова Я.Я., Кошки больше обычных // Разноразмерные кошки. 2022. Т. 5. С. 17--18.', 2022),
+    ('Ягуарова', 'Ягуарова Я.Я., Обычные кошки // Разноразмерные кошки. 2021. Т. 6. С. 19--20.', 2021),
+    ('Ягуарова', 'Ягуарова Я.Я., Некрупные кошки // Разноразмерные кошки. 2021. Т. 7. С. 21--22.', 2021),
+    ('Ягуарова', 'Ягуарова Я.Я., Небольшие кошки // Разноразмерные кошки. 2021. Т. 8. С. 23--24.', 2021),
+    ('Ягуарова', 'Ягуарова Я.Я., Маленькие кошки // Разноразмерные кошки. 2021. Т. 9. С. 25--26.', 2021)
+) AS t(last_name, text_content, year)
+CROSS JOIN LATERAL (SELECT id FROM public.person WHERE last_name = t.last_name LIMIT 1) p;
+-- =============================================
 
 INSERT INTO public.ds_event (
     thesis_id, event_type, protocol_number, protocol_date, 
@@ -588,7 +614,7 @@ INSERT INTO public.ds_event (
 )
 VALUES (
     (SELECT id FROM public.thesis WHERE title LIKE '%Гидродинамика движения%'),
-    'commission_creation',  -- создание комиссии по предварительному рассмотрению
+    'commission_creation',
     '1',
     '2026-01-01',
     15,
@@ -691,7 +717,7 @@ BEGIN
         SELECT a.id, a.text_content 
         FROM public.achievement a
         WHERE a.person_id = (SELECT id FROM public.person WHERE last_name = 'Иванов' AND first_name = 'Иван')
-        AND a.type = 3  -- тезисы
+        AND a.type = 3
         AND NOT EXISTS (
             SELECT 1 FROM public.thesis_achievement ta 
             WHERE ta.achievement_id = a.id AND ta.thesis_id = thesis_id_var
@@ -701,4 +727,3 @@ BEGIN
         VALUES (thesis_id_var, achievement_rec.id, false, NULL);
     END LOOP;
 END $$;
-
