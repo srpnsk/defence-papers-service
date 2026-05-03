@@ -1,10 +1,10 @@
 # main.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import database
-from models import ThesisFormData, ThesisCreate, PersonCreate
+from models import ThesisFormData, ThesisCreate, UserInfo
 
 from routers import (
     persons,
@@ -16,13 +16,13 @@ from routers import (
     employments,
     educations,
     applicant_details,
-    auth
+    auth,
 )
 from form_handler import process_thesis_form
-from routers.persons import create_person
 from routers.theses import create_thesis as create_thesis_router
-from utils import parse_full_name, parse_russian_date
+from utils import parse_russian_date
 from data_assembler import assemble_full_thesis_json
+from routers.auth import get_current_user
 
 
 @asynccontextmanager
@@ -39,16 +39,16 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS – разрешает запросы с любого источника (при необходимости сузьте)
+# CORS с поддержкой кук
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:8080"],   # адрес фронтенда
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Стандартные CRUD-роутеры
+# Подключаем CRUD-роутеры и аутентификацию
 app.include_router(persons.router)
 app.include_router(organizations.router)
 app.include_router(specialties.router)
@@ -62,40 +62,51 @@ app.include_router(auth.router)
 
 
 # ----------------------------------------------------------------------
-# Эндпоинты для работы с полной формой
+# Эндпоинты, доступные только авторизованным пользователям
 # ----------------------------------------------------------------------
-@app.post("/api/thesis/form-data", tags=["Thesis Form"], status_code=201)
-async def create_thesis_from_form(form_data: ThesisFormData):
+
+@app.get("/api/my-theses", tags=["User Theses"])
+async def get_my_theses(user: UserInfo = Depends(get_current_user)):
     """
-    Создаёт новую диссертацию и все связанные записи из полной формы.
-    Возвращает ID созданной диссертации.
+    Возвращает список диссертаций, принадлежащих текущему пользователю.
+    """
+    # Получаем person_id пользователя
+    person_row = await database.fetch_one(
+        "SELECT person_id FROM users WHERE id = :user_id", {"user_id": user.user_id}
+    )
+    if not person_row:
+        raise HTTPException(status_code=404, detail="Пользователь не связан с персоной")
+    applicant_id = person_row["person_id"]
+
+    query = """
+        SELECT id, title, target_degree, planned_defence_date
+        FROM thesis
+        WHERE applicant_id = :applicant_id
+        ORDER BY id DESC
+    """
+    rows = await database.fetch_all(query, {"applicant_id": applicant_id})
+    return [dict(row) for row in rows]
+
+
+@app.post("/api/thesis/form-data", tags=["Thesis Form"], status_code=201)
+async def create_thesis_from_form(
+    form_data: ThesisFormData,
+    user: UserInfo = Depends(get_current_user)
+):
+    """
+    Создаёт новую диссертацию, автоматически привязывая её к текущему пользователю.
     """
     data_dict = form_data.dict(by_alias=True)
 
-    # 1. Соискатель
-    applicant_name = parse_full_name(data_dict.get("applicant_full_name_I", ""))
-    if not applicant_name:
-        raise HTTPException(status_code=400, detail="Не заполнено ФИО соискателя")
-
-    # Ищем существующего соискателя по фамилии и имени
-    existing_applicant = await database.fetch_one(
-        "SELECT id FROM person WHERE last_name = :last_name AND first_name = :first_name",
-        {"last_name": applicant_name["last_name"], "first_name": applicant_name["first_name"]}
+    # Получаем person_id текущего пользователя (он же соискатель)
+    person_row = await database.fetch_one(
+        "SELECT person_id FROM users WHERE id = :user_id", {"user_id": user.user_id}
     )
-    if existing_applicant:
-        applicant_id = existing_applicant["id"]
-    else:
-        new_applicant = await create_person(PersonCreate(
-            last_name=applicant_name["last_name"],
-            first_name=applicant_name["first_name"],
-            second_name=applicant_name.get("second_name"),
-            email=data_dict.get("applicant_email"),
-            phone_number=data_dict.get("applicant_phone_number"),
-            specialty_id=None
-        ))
-        applicant_id = new_applicant["id"]
+    if not person_row:
+        raise HTTPException(status_code=400, detail="Пользователь не связан с персоной")
+    applicant_id = person_row["person_id"]
 
-    # 2. Специальность диссертации
+    # Специальность диссертации
     spec_code = data_dict.get("applicant_specialty_number", "")
     spec_row = await database.fetch_one(
         "SELECT id FROM specialty WHERE code = :code", {"code": spec_code}
@@ -109,7 +120,7 @@ async def create_thesis_from_form(form_data: ThesisFormData):
     else:
         specialty_id = spec_row["id"]
 
-    # 3. Диссертационный совет
+    # Диссовет
     council_number = data_dict.get("DS_number", "")
     council_row = await database.fetch_one(
         "SELECT id FROM dissertation_council WHERE number = :number", {"number": council_number}
@@ -118,7 +129,7 @@ async def create_thesis_from_form(form_data: ThesisFormData):
         raise HTTPException(status_code=400, detail=f"Диссовет с номером '{council_number}' не найден")
     council_id = council_row["id"]
 
-    # 4. Создаём диссертацию
+    # Создаём диссертацию
     thesis_create = ThesisCreate(
         applicant_id=applicant_id,
         council_id=council_id,
@@ -132,7 +143,7 @@ async def create_thesis_from_form(form_data: ThesisFormData):
     new_thesis = await create_thesis_router(thesis_create)
     thesis_id = new_thesis["id"]
 
-    # 5. Применить полную обработку формы
+    # Полная обработка формы (соискатель, руководитель, оппоненты и т.д.)
     await process_thesis_form(thesis_id, data_dict)
 
     return {
@@ -143,20 +154,56 @@ async def create_thesis_from_form(form_data: ThesisFormData):
 
 
 @app.post("/api/thesis/{thesis_id}/form-data", tags=["Thesis Form"])
-async def update_thesis_from_form(thesis_id: int, form_data: ThesisFormData):
+async def update_thesis_from_form(
+    thesis_id: int,
+    form_data: ThesisFormData,
+    user: UserInfo = Depends(get_current_user)
+):
     """
-    Обновляет существующую диссертацию и все связанные записи из полной формы.
+    Обновляет диссертацию, предварительно проверив, что она принадлежит текущему пользователю.
     """
     data_dict = form_data.dict(by_alias=True)
+
+    # Получаем person_id текущего пользователя
+    person_row = await database.fetch_one(
+        "SELECT person_id FROM users WHERE id = :user_id", {"user_id": user.user_id}
+    )
+    if not person_row:
+        raise HTTPException(status_code=400, detail="Пользователь не связан с персоной")
+    applicant_id = person_row["person_id"]
+
+    # Проверяем владельца диссертации
+    owner_check = await database.fetch_one(
+        "SELECT applicant_id FROM thesis WHERE id = :id", {"id": thesis_id}
+    )
+    if not owner_check or owner_check["applicant_id"] != applicant_id:
+        raise HTTPException(status_code=403, detail="У вас нет прав на эту диссертацию")
+
     await process_thesis_form(thesis_id, data_dict)
     return {"status": "success", "message": f"Данные диссертации {thesis_id} обновлены"}
 
 
 @app.get("/api/thesis/{thesis_id}/form-data", tags=["Thesis Form"])
-async def get_thesis_form_data(thesis_id: int):
+async def get_thesis_form_data(
+    thesis_id: int,
+    user: UserInfo = Depends(get_current_user)
+):
     """
-    Возвращает полный JSON формы, собранный из всех таблиц БД.
+    Возвращает полный JSON диссертации, но только если она принадлежит текущему пользователю.
     """
+    person_row = await database.fetch_one(
+        "SELECT person_id FROM users WHERE id = :user_id", {"user_id": user.user_id}
+    )
+    if not person_row:
+        raise HTTPException(status_code=400, detail="Пользователь не связан с персоной")
+    applicant_id = person_row["person_id"]
+
+    owner_check = await database.fetch_one(
+        "SELECT applicant_id FROM thesis WHERE id = :id", {"id": thesis_id}
+    )
+    if not owner_check or owner_check["applicant_id"] != applicant_id:
+        raise HTTPException(status_code=403, detail="Доступ запрещён")
+
     data = await assemble_full_thesis_json(thesis_id)
     if not data:
         raise HTTPException(status_code=404, detail="Данные формы не найдены")
