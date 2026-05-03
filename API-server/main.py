@@ -16,6 +16,7 @@ from routers import (
     employments,
     educations,
     applicant_details,
+    auth
 )
 from form_handler import process_thesis_form
 from routers.persons import create_person
@@ -57,6 +58,7 @@ app.include_router(achievements.router)
 app.include_router(employments.router)
 app.include_router(educations.router)
 app.include_router(applicant_details.router)
+app.include_router(auth.router)
 
 
 # ----------------------------------------------------------------------
