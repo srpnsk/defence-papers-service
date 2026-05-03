@@ -1,5 +1,5 @@
 import databases
-import sqlalchemy
+# import sqlalchemy
 from sqlalchemy import create_engine, MetaData
 
 DATABASE_URL = "postgresql+psycopg://postgres:post@localhost:9543/disser"

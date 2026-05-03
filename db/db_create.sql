@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.person (
     second_name varchar(64),
     degree varchar(128),
     academic_title varchar(128),
-    email varchar(128),
+    email varchar(128) UNIQUE,
     phone_number varchar(64),
     specialty_id bigint REFERENCES public.specialty(id)
 );
