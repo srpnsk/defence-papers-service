@@ -1,6 +1,2 @@
 __pycache__/
-*.pyc
-*.pyd
-*.pyo
-*$py.class
-*.so
+\*.pyc
