@@ -1,8 +1,6 @@
-from pydantic import *
-from typing import *
-from datetime import *
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
+from typing import Optional
+from datetime import date, datetime
 
 class AuthRequest(BaseModel):
     email: EmailStr

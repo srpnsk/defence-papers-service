@@ -1,7 +1,9 @@
 # main.py
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 from database import database
 from models import ThesisFormData, ThesisCreate, UserInfo
@@ -26,55 +28,6 @@ from routers.auth import get_current_user
 from latex_compiler import LatexCompiler
 
 compiler = LatexCompiler(temp_base="./temp_latex")
-
-@app.get("/api/thesis/{thesis_id}/download-pdf", tags=["Thesis Documents"])
-async def download_thesis_pdf(
-    thesis_id: int, 
-    background_tasks: BackgroundTasks,
-    user: UserInfo = Depends(get_current_user)
-):
-    """
-    Генерирует PDF документы для диссертации и отдает их в виде ZIP-архива.
-    """
-    # 1. Проверяем владельца (как в твоих других эндпоинтах)
-    owner_check = await database.fetch_one(
-        "SELECT applicant_id FROM thesis WHERE id = :id", {"id": thesis_id}
-    )
-    if not owner_check:
-        raise HTTPException(status_code=404, detail="Диссертация не найдена")
-    
-    # Здесь логика проверки owner_check["applicant_id"] == current_user.person_id
-    
-    # 2. Собираем полные данные для шаблонов (твой data_assembler)
-    full_data = await assemble_full_thesis_json(thesis_id)
-    
-    # 3. Подготавливаем контент для файлов (превращаем JSON в TeX-команды)
-    # Здесь тебе нужно написать логику, которая из full_data делает TeX-строки
-    # Для примера создадим минимальное наполнение:
-    tex_files_content = {
-        "01_Before_acceptance.tex": f"\\title{{{full_data.get('title', 'Thesis')}}} \\begin{{document}} \\maketitle \\end{{document}}",
-        # "02_Acceptance_panel.tex": ...
-    }
-
-    # 4. Запускаем компиляцию
-    # Модуль сам создаст UUID-папку и запакует результаты
-    try:
-        results = compiler.compile_from_files(tex_files_content)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Ошибка компиляции: {str(e)}")
-
-    if "pdf_zip" not in results or not os.path.exists(results["pdf_zip"]):
-        raise HTTPException(status_code=500, detail="Не удалось создать PDF архив")
-
-    # 5. Планируем очистку временной папки после отправки файла
-    background_tasks.add_task(compiler.cleanup, results["work_dir"])
-
-    # 6. Отдаем файл пользователю
-    return FileResponse(
-        path=results["pdf_zip"],
-        filename=f"thesis_{thesis_id}_documents.zip",
-        media_type="application/zip"
-    )
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -115,6 +68,45 @@ app.include_router(auth.router)
 # ----------------------------------------------------------------------
 # Эндпоинты, доступные только авторизованным пользователям
 # ----------------------------------------------------------------------
+
+@app.get("/api/thesis/{thesis_id}/download-pdf", tags=["Thesis Documents"])
+async def download_thesis_pdf(
+    thesis_id: int, 
+    background_tasks: BackgroundTasks,
+    user: UserInfo = Depends(get_current_user)
+):
+    """
+    Генерирует PDF документы для диссертации и отдает их в виде ZIP-архива.
+    """
+    owner_check = await database.fetch_one(
+        "SELECT applicant_id FROM thesis WHERE id = :id", {"id": thesis_id}
+    )
+    if not owner_check:
+        raise HTTPException(status_code=404, detail="Диссертация не найдена")
+
+    full_data = await assemble_full_thesis_json(thesis_id)
+    
+    tex_files_content = {
+        "01_Before_acceptance.tex": f"\\title{{{full_data.get('title', 'Thesis')}}} \\begin{{document}} \\maketitle \\end{{document}}",
+        "02_Acceptance_panel.tex":  f"\\title{{{full_data.get('title', 'Thesis')}}} \\begin{{document}} \\maketitle \\end{{document}}"
+    }
+
+    try:
+        results = compiler.compile_from_files(tex_files_content)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка компиляции: {str(e)}")
+
+    if "pdf_zip" not in results or not os.path.exists(results["pdf_zip"]):
+        raise HTTPException(status_code=500, detail="Не удалось создать PDF архив")
+
+    background_tasks.add_task(compiler.cleanup, results["work_dir"])
+
+    return FileResponse(
+        path=results["pdf_zip"],
+        filename=f"thesis_{thesis_id}_documents.zip",
+        media_type="application/zip"
+    )
+
 
 @app.get("/api/my-theses", tags=["User Theses"])
 async def get_my_theses(user: UserInfo = Depends(get_current_user)):
