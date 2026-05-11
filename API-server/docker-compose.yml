@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  # Контейнер с базой данных
+  db:
+    image: postgres:15
+    restart: always
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "9543:5432" # Пробрасываем порт наружу, чтобы ты могла зайти в БД с компа
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d # Авто-запуск твоих .sql скриптов
+
+  # Контейнер с твоим Python сервером
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "${API_PORT}:8087"
+    depends_on:
+      - db
