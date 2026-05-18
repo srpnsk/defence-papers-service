@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-  # Контейнер с базой данных
   db:
     image: postgres:15
     restart: always
@@ -11,11 +10,15 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "9543:5432" # Пробрасываем порт наружу, чтобы ты могла зайти в БД с компа
+      - "9543:5432"
     volumes:
-      - ./db:/docker-entrypoint-initdb.d # Авто-запуск твоих .sql скриптов
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d disser"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
-  # Контейнер с твоим Python сервером
   api:
     build:
       context: .
@@ -24,4 +27,5 @@ services:
     ports:
       - "${API_PORT}:8087"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
