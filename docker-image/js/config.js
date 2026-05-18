@@ -2,7 +2,7 @@
 // Глобальные константы и списки для формы диссертации
 
 // Базовый URL API (FastAPI)
-window.API_BASE_URL = "http://185.11.247.199:8087";
+window.API_BASE_URL = "http://127.0.0.1:8087";
 
 // Список учёных степеней
 window.DEGREES = [
