@@ -1,8 +1,8 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
-    image: postgres:latest                # или latest / конкретная версия
+    image: postgres:15
     container_name: postgres-disser
     restart: unless-stopped
     environment:
@@ -12,8 +12,9 @@ services:
     ports:
       - "9543:5432"
     volumes:
-      - ./init-scripts:/docker-entrypoint-initdb.d   # монтируем папку со скриптами
-      - pgdata:/var/lib/postgresql/data               # постоянное хранилище данных
+      - ./init-scripts:/docker-entrypoint-initdb.d # монтируем папку со скриптами
+      - pgdata:/var/lib/postgresql/data # постоянное хранилище данных
 
 volumes:
   pgdata:
+
