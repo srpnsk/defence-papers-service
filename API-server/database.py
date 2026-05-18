@@ -1,8 +1,12 @@
 import databases
+import os
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import create_engine, MetaData, Table, Column, BigInteger, String, ForeignKey
 
-DATABASE_URL = "postgresql+psycopg://postgres:post@localhost:9543/disser"
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", 
+    "postgresql+psycopg://postgres:post@localhost:9543/disser"
+)
 
 database = databases.Database(DATABASE_URL)
 metadata = MetaData()
