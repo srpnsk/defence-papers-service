@@ -46,7 +46,7 @@ app = FastAPI(
 # CORS с поддержкой кук
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],   # адрес фронтенда
+    allow_origins=["http://185.11.247.199:8080"],   # адрес фронтенда
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
