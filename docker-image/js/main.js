@@ -41,11 +41,9 @@ function isStepValid(step) {
 // Главное приложение
 // ----------------------------------------------------------------------
 const App = () => {
-    // Состояния приложения
-    const [appState, setAppState] = useState('login'); // login | register | dashboard | generator
+    const [appState, setAppState] = useState('login');
     const [isPdfLoading, setIsPdfLoading] = useState(false);
 
-    // Черновики (localStorage) – опционально
     const [drafts, setDrafts] = useState(() => {
         const saved = localStorage.getItem('tex_drafts');
         return saved ? JSON.parse(saved) : [];
@@ -54,7 +52,7 @@ const App = () => {
         localStorage.setItem('tex_drafts', JSON.stringify(drafts));
     }, [drafts]);
 
-    // Динамические настройки формы
+    // Динамические настройки
     const [opponentCount, setOpponentCount] = useState(3);
     const [hasAdditionalJob, setHasAdditionalJob] = useState(false);
     const [hasHonorsDiploma, setHasHonorsDiploma] = useState(false);
@@ -72,8 +70,8 @@ const App = () => {
     const [commissionOnline, setCommissionOnline] = useState(5);
     const [defenceOffline, setDefenceOffline] = useState(11);
     const [defenceOnline, setDefenceOnline] = useState(4);
+    const [showParams, setShowParams] = useState(true);
 
-    // Все поля формы (перестраиваются при изменении параметров)
     const fields = useMemo(() => {
         return window.buildAllFields({
             opponentCount,
@@ -94,28 +92,16 @@ const App = () => {
             defenceOffline,
             defenceOnline
         });
-    }, [
-        opponentCount, hasAdditionalJob, hasHonorsDiploma,
-        hasPostgradDiploma, specialtyItemCount, taskCount,
-        noveltyCount, valueCount, provisionCount,
-        articlesCount, conferencesCount, advisorArticlesCount,
-        opponentArticlesCount, commissionOffline, commissionOnline,
-        defenceOffline, defenceOnline
-    ]);
+    }, [opponentCount, hasAdditionalJob, hasHonorsDiploma, hasPostgradDiploma, specialtyItemCount, taskCount, noveltyCount, valueCount, provisionCount, articlesCount, conferencesCount, advisorArticlesCount, opponentArticlesCount, commissionOffline, commissionOnline, defenceOffline, defenceOnline]);
 
-    // Текущее состояние полей (может изменяться пользователем)
     const [currentFields, setCurrentFields] = useState(fields);
-    useEffect(() => {
-        setCurrentFields(fields);
-    }, [fields]);
+    useEffect(() => { setCurrentFields(fields); }, [fields]);
 
-    // Текущий шаг
     const [currentStep, setCurrentStep] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
     const [showErrors, setShowErrors] = useState(false);
     const [thesisId, setThesisId] = useState('');
 
-    // Определение мобильной версии
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
         checkMobile();
@@ -123,7 +109,6 @@ const App = () => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Группировка шагов
     const steps = useMemo(() => {
         const grouped = [];
         const files = [...new Set(currentFields.map(f => f.file))];
@@ -170,7 +155,6 @@ const App = () => {
         return grouped;
     }, [currentFields]);
 
-    // Обработчики
     const handleChange = useCallback((id, newValue) => {
         setCurrentFields(prev => prev.map(f => f.id === id ? { ...f, value: newValue } : f));
     }, []);
@@ -204,7 +188,6 @@ const App = () => {
         setCurrentFields(prev => prev.filter(f => f.id !== id));
     }, []);
 
-    // Серверные вызовы
     const [serverTheses, setServerTheses] = useState([]);
     const loadServerTheses = useCallback(async () => {
         const data = await window.fetchMyTheses();
@@ -245,7 +228,6 @@ const App = () => {
         }
     };
 
-    // Аутентификация
     const handleLogin = async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -277,7 +259,6 @@ const App = () => {
         }
     };
 
-    // Рендеринг
     const step = steps[currentStep];
 
     if (appState === 'login') {
@@ -403,9 +384,14 @@ const App = () => {
                     <button onClick={() => setAppState('dashboard')} className="text-gray-500 hover:text-gray-700 text-sm font-medium">
                         ← Вернуться в ЛК
                     </button>
-                    <button onClick={saveToServer} className="px-4 py-2 rounded-lg font-bold bg-green-500 hover:bg-green-600 text-white transition-colors shadow text-sm">
-                        Сохранить на сервер
-                    </button>
+                    <div className="flex space-x-2">
+                        <button onClick={() => setShowParams(true)} className="px-4 py-2 rounded-lg font-bold bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow text-sm">
+                            Настройки
+                        </button>
+                        <button onClick={saveToServer} className="px-4 py-2 rounded-lg font-bold bg-green-500 hover:bg-green-600 text-white transition-colors shadow text-sm">
+                            Сохранить на сервер
+                        </button>
+                    </div>
                 </div>
             )}
             {isMobile && (
@@ -413,11 +399,113 @@ const App = () => {
                     <button onClick={() => setAppState('dashboard')} className="text-gray-600 hover:text-gray-900 text-sm font-medium">
                         ← Назад
                     </button>
-                    <button onClick={saveToServer} className="px-3 py-1.5 rounded-md bg-green-500 text-white text-xs font-semibold">
-                        Сохранить
-                    </button>
+                    <div className="flex space-x-2">
+                        <button onClick={() => setShowParams(true)} className="px-3 py-1.5 rounded-md bg-blue-500 text-white text-xs font-semibold">
+                            Настройки
+                        </button>
+                        <button onClick={saveToServer} className="px-3 py-1.5 rounded-md bg-green-500 text-white text-xs font-semibold">
+                            Сохранить
+                        </button>
+                    </div>
                 </div>
             )}
+
+            {/* ПАНЕЛЬ ПАРАМЕТРОВ */}
+            {showParams && (
+                <div className="w-full max-w-3xl mb-4 p-4 bg-white rounded-xl shadow">
+                    <h3 className="text-lg font-bold mb-2">Параметры диссертации</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                        <label className="text-sm">Количество оппонентов</label>
+                        <input type="number" min="1" max="10" value={opponentCount}
+                            onChange={(e) => setOpponentCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Пунктов паспорта специальности</label>
+                        <input type="number" min="1" max="10" value={specialtyItemCount}
+                            onChange={(e) => setSpecialtyItemCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Количество задач</label>
+                        <input type="number" min="1" max="20" value={taskCount}
+                            onChange={(e) => setTaskCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Пунктов научной новизны</label>
+                        <input type="number" min="1" max="20" value={noveltyCount}
+                            onChange={(e) => setNoveltyCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Пунктов практической ценности</label>
+                        <input type="number" min="1" max="20" value={valueCount}
+                            onChange={(e) => setValueCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Положений</label>
+                        <input type="number" min="1" max="20" value={provisionCount}
+                            onChange={(e) => setProvisionCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Статей соискателя</label>
+                        <input type="number" min="1" max="50" value={articlesCount}
+                            onChange={(e) => setArticlesCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Конференций</label>
+                        <input type="number" min="0" max="50" value={conferencesCount}
+                            onChange={(e) => setConferencesCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Статей руководителя</label>
+                        <input type="number" min="0" max="50" value={advisorArticlesCount}
+                            onChange={(e) => setAdvisorArticlesCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Статей оппонента</label>
+                        <input type="number" min="0" max="50" value={opponentArticlesCount}
+                            onChange={(e) => setOpponentArticlesCount(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Членов комиссии очно</label>
+                        <input type="number" min="0" max="30" value={commissionOffline}
+                            onChange={(e) => setCommissionOffline(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Членов комиссии онлайн</label>
+                        <input type="number" min="0" max="30" value={commissionOnline}
+                            onChange={(e) => setCommissionOnline(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Членов совета на защите очно</label>
+                        <input type="number" min="0" max="30" value={defenceOffline}
+                            onChange={(e) => setDefenceOffline(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Членов совета на защите онлайн</label>
+                        <input type="number" min="0" max="30" value={defenceOnline}
+                            onChange={(e) => setDefenceOnline(Number(e.target.value))}
+                            className="border rounded px-2" />
+
+                        <label className="text-sm">Работа по совместительству</label>
+                        <input type="checkbox" checked={hasAdditionalJob}
+                            onChange={(e) => setHasAdditionalJob(e.target.checked)} />
+
+                        <label className="text-sm">Диплом с отличием</label>
+                        <input type="checkbox" checked={hasHonorsDiploma}
+                            onChange={(e) => setHasHonorsDiploma(e.target.checked)} />
+
+                        <label className="text-sm">Диплом об окончании аспирантуры</label>
+                        <input type="checkbox" checked={hasPostgradDiploma}
+                            onChange={(e) => setHasPostgradDiploma(e.target.checked)} />
+                    </div>
+                    <button className="mt-2 px-4 py-1 bg-blue-500 text-white rounded" onClick={() => {
+                        setCurrentFields(fields);
+                        setCurrentStep(0);
+                        setShowParams(false);
+                    }}>Продолжить</button>
+                </div>
+            )}
+
+            {/* ОСНОВНОЙ РЕДАКТОР ШАГОВ */}
             <div className={`w-full max-w-3xl bg-white flex flex-col ${isMobile ? 'h-full flex-1' : 'shadow-xl rounded-2xl overflow-hidden h-[800px] max-h-full'}`}>
                 <div className="bg-blue-600 p-4 sm:p-6 text-white flex justify-between items-center shrink-0">
                     <h2 className="text-lg sm:text-2xl font-bold">{step.section}</h2>
@@ -480,6 +568,5 @@ const App = () => {
     );
 };
 
-// Рендеринг
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
