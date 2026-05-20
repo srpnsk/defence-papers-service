@@ -1,0 +1,59 @@
+    \begin{table}[h!]
+        \raggedleft
+            \begin{tabular}{r}
+                Председателю диссертационного совета \\[5pt]
+                МИФИ.\usekomavar{DS_number} НИЯУ МИФИ \\[5pt]
+                \usekomavar{DS_chairman_name_D}
+            \end{tabular}
+    \end{table}
+    
+    \begin{tightcenter}
+        \textbf{ЗАЯВЛЕНИЕ}
+    \end{tightcenter}
+
+    \vspace{5mm}
+
+    Настоящим подтверждаю своё согласие выступить в роли официального оппонента на защите диссертации соискателя учёной степени \usekomavar{degree_R} \usekomavar{applicant_full_name_R}
+    
+    тема: \usekomavar{thesis_title}
+    
+    научная специальность: \usekomavar{applicant_specialty_number} – \usekomavar{applicant_specialty_title}.
+    
+    \uline{О себе сообщаю:} \usekomavar{opponent2_name_full_I}.
+
+    \uline{Шифр и наименование научной специальности, по которой защищена диссертация:} \usekomavar{opponent2_specialty_number} – \usekomavar{opponent2_specialty_title}.
+
+    \uline{Ученая степень, ученое звание:} \usekomavar{opponent2_degree}, \usekomavar{opponent2_title}.
+
+    \uline{Место работы, подразделение и должность:} \usekomavar{opponent2_main_workplace_full}, \usekomavar{opponent2_main_job}.
+
+    \uline{Индекс, почтовый адрес места работы:} \usekomavar{opponent2_main_workplace_adress}.
+
+    \uline{Рабочий e-mail, рабочий телефон:} \usekomavar{opponent2_email}, \usekomavar{opponent2_phone_number}.
+
+    Даю свое согласие на публикацию предоставленных в настоящем заявлении моих персональных данных на сайте НИЯУ МИФИ, а также их хранение и использование в целях, связанных с обеспечением процедуры предстоящей защиты и последующей отчетности о деятельности диссертационного совета. 
+    
+    \vspace{5mm}
+    
+    \begin{tightcenter}
+        \textbf{Список основных публикаций по научной специальности и (или) тематике оппонируемой диссертации в рецензируемых научных изданиях за последние 5 лет:}
+    \end{tightcenter}
+  
+    \begin{enumerate}
+        \item \usekomavar{opponent2_article_1}
+        \item \usekomavar{opponent2_article_2}
+        \item \usekomavar{opponent2_article_3}
+        \item \usekomavar{opponent2_article_4}
+        \item \usekomavar{opponent2_article_5}
+        \forloop{ooacount}{6}{\value{ooacount} < \value{ooanumber}}%
+        {%
+            \item \usekomavar{opponent2_article_\theooacount}\
+        }
+    \end{enumerate}
+    
+    \begin{table}[H]
+            \begin{tabular}{p{0.6\linewidth}p{0.4\linewidth}}
+                \usekomavar{opponent2_name_full_I} & \\
+                \usekomavar{opponent2_degree_title}& \uline{\hspace{6em}}~/\usekomavar{opponent2_name_short}/
+            \end{tabular}
+    \end{table}

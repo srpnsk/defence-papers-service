@@ -33,24 +33,76 @@ window.generateTex = function(file, fields) {
 };
 
 /**
- * Генерирует ZIP-архив со всеми .tex файлами и инициирует его скачивание.
+ * Генерирует ZIP-архив с правильной структурой папок и статическими файлами.
  * @param {Array} fields - Массив всех полей формы
  */
-window.downloadTexZip = function(fields) {
-    const files = [...new Set(fields.map(f => f.file))];
+window.downloadTexZip = async function(fields) {
     const zip = new JSZip();
-    files.forEach(file => {
-        const tex = window.generateTex(file, fields);
-        zip.file(file.split('/').pop(), tex);
-    });
-    zip.generateAsync({ type: "blob" }).then(function(content) {
+
+    const staticFiles = [
+        "assets/Sources/commands.tex",
+        "assets/Sources/screenshot_01.png", // заглушка
+        "assets/Sources/variables_01.tex",
+        "assets/Sources/variables_common.tex",
+        "assets/Sources/variables_02.tex",
+        "assets/Templates/11_1.tex",
+        "assets/Templates/11_2.tex",
+        "assets/Templates/11_3.tex",
+        "assets/Templates/13.tex",
+        "assets/Templates/15.tex",
+        "assets/Templates/18_1.tex",
+        "assets/Templates/19_2.tex",
+        "assets/Templates/20.tex",
+        "assets/Templates/21.tex",
+        "assets/Templates/2_M.tex",
+        "assets/Templates/2_F.tex",
+        "assets/Templates/3.tex",
+        "assets/Templates/9.tex",
+        "assets/01_Before_acceptance.tex",
+        "assets/02_Acceptance_panel.tex",
+        "assets/style.sty"
+    ];
+
+    try {
+        // 2. Скачиваем всю статику параллельно
+        const downloadPromises = staticFiles.map(async (filePath) => {
+            const response = await fetch(`/${filePath}`); // Корректируйте URL под ваш сервер
+            if (!response.ok) throw new Error(`Не удалось скачать файл: ${filePath}`);
+            const blob = await response.blob();
+            
+            // Клади затылочные файлы в архив, сохраняя путь
+            zip.file(filePath, blob);
+        });
+
+        // Ждем завершения всех загрузок
+        await Promise.all(downloadPromises);
+
+        // 3. Генерируем динамические .tex файлы на основе полей формы
+        const uniqueDynamicFiles = [...new Set(fields.map(f => f.file))];
+        
+        uniqueDynamicFiles.forEach(file => {
+            const texContent = window.generateTex(file, fields);
+            // Важно: передаем 'file' целиком (например, "Sources/variables_common_input.tex")
+            // JSZip сам разберется с вложенными папками
+            zip.file(file, texContent);
+        });
+
+        // 4. Генерация самого архива и триггер скачивания
+        const content = await zip.generateAsync({ type: "blob" });
+        
         const url = URL.createObjectURL(content);
         const a = document.createElement('a');
         a.href = url;
-        a.download = "tex_sources.zip";
+        a.download = "thesis_sources.zip";
         document.body.appendChild(a);
         a.click();
+        
+        // Чистим за собой память
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-    });
+
+    } catch (error) {
+        console.error("Ошибка при формировании ZIP-архива:", error);
+        alert("Произошла ошибка при сборке архива. Проверьте консоль.");
+    }
 };
