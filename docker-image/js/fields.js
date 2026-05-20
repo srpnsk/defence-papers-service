@@ -97,8 +97,8 @@ window.buildAllFields = function(params) {
     fields.push({id:"applicant_PG_study", value:"", type:"string", label:"Где учился в аспирантуре", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
     fields.push({id:"applicant_job_organisation", value:"", type:"string", label:"Место работы соискателя", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
     fields.push({id:"applicant_main_job", value:"", type:"string", label:"Должность соискателя, в родительном падеже", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
-    fields.push({id:"applicant_job_department_number", value:"", type:"string", label:"Номер кафедры, где работает соискателя", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
-    fields.push({id:"applicant_job_department_title", value:"", type:"string", label:"Названиекафедры, где работает соискателя", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
+    fields.push({id:"applicant_job_department_number", value:"", type:"string", label:"Номер кафедры, где работает соискатель", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
+    fields.push({id:"applicant_job_department_title", value:"", type:"string", label:"Название кафедры, где работает соискателя", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
     // Флаг совместительства
     fields.push({id:"aajob", value:p.hasAdditionalJob?"1":"0", type:"counter", label:"Флаг наличия работы по совместительству у соискателя, 0 если нет, 1 если есть", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"number"});
     if (p.hasAdditionalJob) {
@@ -126,7 +126,7 @@ window.buildAllFields = function(params) {
     // Семинар
     fields.push({id:"seminar_departament_number", value:"", type:"string", label:"Номер кафедры, проводящей семинар", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
     fields.push({id:"seminar_departament_title", value:"", type:"string", label:"Название кафедры, проводящей семинар", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
-    fields.push({id:"seminar_faculty", value:"", type:"string", label:"Номер института, проводящего семинар, в родительном падеже", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
+    fields.push({id:"seminar_faculty", value:"", type:"string", label:"Название института, проводящего семинар, в родительном падеже", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
     fields.push({id:"seminar_protocol_number", value:"", type:"string", label:"Номер протокола семинара", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"text"});
     fields.push({id:"seminar_date", value:"", type:"string", label:"Дата протокола семинара", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"date"});
     fields.push({id:"zakltotal", value:"", type:"counter", label:"Присутствовало на семинаре", section:"2 Заключение организации", file:"Sources/variables_01_input.tex", inputType:"number"});
