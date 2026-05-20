@@ -1,0 +1,25 @@
+\documentclass{scrlttr2}
+\usepackage{style}
+
+\input{Sources/commands}
+\input{Sources/variables_common}
+\input{Sources/variables_common_input}
+\input{Sources/variables_02}
+\input{Sources/variables_02_input}
+
+
+\begin{document}
+    \pagestyle{empty}
+    \begin{sloppypar}
+        \input{Templates/15} % Заявление соискателя о принятии к рассмотрению
+        \newpage
+        \input{Templates/18_1} % Протокол о создании комиссии
+        \newpage
+        \input{Templates/19_2} % Протокол совета о приёме к защите
+        \newpage
+        \input{Templates/20} % Заключение комиссии ДС по предварительному рассмотрению 
+        \newpage
+        \input{Templates/21} % 21 Скриншот опубликования на сайте МИФИ
+    \end{sloppypar}
+
+\end{document}

@@ -27,7 +27,10 @@ from data_assembler import assemble_full_thesis_json
 from routers.auth import get_current_user
 from latex_compiler import LatexCompiler
 
-compiler = LatexCompiler(temp_base="./temp_latex")
+compiler = LatexCompiler(
+    temp_base="./temp_latex", 
+    project_root=os.path.abspath("./latex_files") 
+)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -69,44 +72,40 @@ app.include_router(auth.router)
 # Эндпоинты, доступные только авторизованным пользователям
 # ----------------------------------------------------------------------
 
-@app.get("/api/thesis/{thesis_id}/download-pdf", tags=["Thesis Documents"])
-async def download_thesis_pdf(
-    thesis_id: int, 
-    background_tasks: BackgroundTasks,
-    user: UserInfo = Depends(get_current_user)
-):
-    """
-    Генерирует PDF документы для диссертации и отдает их в виде ZIP-архива.
-    """
-    owner_check = await database.fetch_one(
-        "SELECT applicant_id FROM thesis WHERE id = :id", {"id": thesis_id}
-    )
-    if not owner_check:
-        raise HTTPException(status_code=404, detail="Диссертация не найдена")
+class TexData(BaseModel):
+    # Позволяет принимать динамические ключи вида {"Sources/file.tex": "текст"}
+    class Config:
+        extra = "allow"
 
-    full_data = await assemble_full_thesis_json(thesis_id)
+@app.post("/api/compile")
+async def compile_latex(data: dict, background_tasks: BackgroundTasks):
+    # 1. Запускаем компиляцию
+    # Передаем словарь напрямую в ваш метод
+    results = compiler.compile_from_files(data)
     
-    tex_files_content = {
-        "01_Before_acceptance.tex": f"\\title{{{full_data.get('title', 'Thesis')}}} \\begin{{document}} \\maketitle \\end{{document}}",
-        "02_Acceptance_panel.tex":  f"\\title{{{full_data.get('title', 'Thesis')}}} \\begin{{document}} \\maketitle \\end{{document}}"
-    }
-
-    try:
-        results = compiler.compile_from_files(tex_files_content)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Ошибка компиляции: {str(e)}")
-
-    if "pdf_zip" not in results or not os.path.exists(results["pdf_zip"]):
-        raise HTTPException(status_code=500, detail="Не удалось создать PDF архив")
-
-    background_tasks.add_task(compiler.cleanup, results["work_dir"])
-
+    work_dir = results.get("work_dir")
+    pdf_zip_path = results.get("pdf_zip")
+    
+    # Если в логах есть ошибки или архив не создался
+    if not pdf_zip_path or not os.path.exists(pdf_zip_path):
+        # Перед паникой логируем ошибки компиляции
+        errors = "\n".join(results.get("logs", []))
+        # На всякий случай чистим папку, так как эндпоинт прервется
+        compiler.cleanup(work_dir)
+        raise HTTPException(
+            status_code=422, 
+            detail=f"Ошибка компиляции документов. Логи:\n{errors}"
+        )
+    
+    # 2. Добавляем фоновую задачу на удаление временной папки ПОСЛЕ того, как файл улетит клиенту
+    background_tasks.add_task(compiler.cleanup, work_dir)
+    
+    # 3. Отправляем ZIP-архив с готовыми PDF обратно фронтенду
     return FileResponse(
-        path=results["pdf_zip"],
-        filename=f"thesis_{thesis_id}_documents.zip",
+        path=pdf_zip_path, 
+        filename="compiled_documents.zip", 
         media_type="application/zip"
     )
-
 
 @app.get("/api/my-theses", tags=["User Theses"])
 async def get_my_theses(user: UserInfo = Depends(get_current_user)):

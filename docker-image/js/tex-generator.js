@@ -70,8 +70,9 @@ window.downloadTexZip = async function(fields) {
             if (!response.ok) throw new Error(`Не удалось скачать файл: ${filePath}`);
             const blob = await response.blob();
             
-            // Клади затылочные файлы в архив, сохраняя путь
-            zip.file(filePath, blob);
+            const cleanArchivePath = filePath.replace(/^assets\//, "");
+            
+            zip.file(cleanArchivePath, blob);
         });
 
         // Ждем завершения всех загрузок
@@ -104,5 +105,45 @@ window.downloadTexZip = async function(fields) {
     } catch (error) {
         console.error("Ошибка при формировании ZIP-архива:", error);
         alert("Произошла ошибка при сборке архива. Проверьте консоль.");
+    }
+};
+
+window.compileOnServer = async function(fields) {
+    const files = [...new Set(fields.map(f => f.file))];
+    
+    // Формируем структуру, которую ожидает Питон: {"Sources/vars.tex": "содержимое..."}
+    let texFilesContent = {};
+    files.forEach(file => {
+        const tex = window.generateTex(file, fields);
+        // Сохраняем имя файла (например, "Sources/variables_common_input.tex")
+        texFilesContent[file] = tex; 
+    });
+
+    try {
+        const response = await fetch('http://185.11.247.199:8087/api/compile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(texFilesContent)
+        });
+
+        if (!response.ok) throw new Error('Ошибка компиляции на сервере');
+
+        // Сервер вернет готовый бинарный файл (ZIP с PDF-документами)
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "compiled_documents.zip";
+        document.body.appendChild(a);
+        a.click();
+        
+        // Очистка
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error(error);
+        alert('Не удалось скомпилировать документы: ' + error.message);
     }
 };

@@ -553,7 +553,7 @@ const App = () => {
                             <button onClick={() => { if (isStepValid(step)) { window.downloadTexZip(currentFields); } else { setShowErrors(true); } }} className="px-4 py-2 rounded-lg font-bold bg-gray-500 hover:bg-gray-600 text-white transition-colors shadow text-sm">
                                 Скачать .tex
                             </button>
-                            <button onClick={() => { if (isStepValid(step)) { /* handleSendPDF using fetch */ } else { setShowErrors(true); } }} disabled={isPdfLoading} className={`px-4 sm:px-6 py-2 rounded-lg font-bold text-white transition-colors shadow ${isPdfLoading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}`}>
+                            <button onClick={() => { if (isStepValid(step)) { window.compileOnServer(currentFields); } else { setShowErrors(true); } }} disabled={isPdfLoading} className={`px-4 sm:px-6 py-2 rounded-lg font-bold text-white transition-colors shadow ${isPdfLoading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}`}>
                                 {isPdfLoading ? 'Генерация...' : 'Скачать PDF'}
                             </button>
                         </div>

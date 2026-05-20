@@ -1,0 +1,274 @@
+    \begin{table}[h!]
+        \raggedleft
+            \begin{tabular}{r}
+                "УТВЕРЖДАЮ" \\[5pt]
+                Ректор НИЯУ МИФИ, д.ф.-м.н. \\[5pt]
+                \uline{\hspace{6em}} В.И. Шевченко \\[5pt]
+                "\uline{\hspace{1em}}"\uline{\hspace{8em}}202\uline{\hspace{1em}}~г.
+            \end{tabular}
+    \end{table}
+
+    \vspace{5mm}
+
+    \begin{tightcenter}
+        \textbf{ЗАКЛЮЧЕНИЕ}
+        
+        федерального государственного автономного образовательного учреждения высшего образования «Национальный исследовательский ядерный университет «МИФИ» (НИЯУ МИФИ)
+
+    \end{tightcenter}
+
+    \vspace{5mm}
+
+    Диссертационная работа \usekomavar{applicant_full_name_R} \usekomavar{thesis_title} на соискание ученой степени \usekomavar{degree_R} по специальности \usekomavar{applicant_specialty_number} – \usekomavar{applicant_specialty_title} выполнена на кафедре № \usekomavar{applicant_department_number} \usekomavar{applicant_department_title} НИЯУ МИФИ.
+
+    В период подготовки диссертации соискательница \usekomavar{applicant_full_name_I} обучалась в \usekomavar{applicant_PG_study} и работала в \usekomavar{applicant_job_organisation} в должности \usekomavar{applicant_main_job} кафедры № \usekomavar{applicant_job_department_number} 
+    \ifnum\theaajob=0
+        \usekomavar{applicant_job_department_title}.
+    \else
+        \usekomavar{applicant_job_department_title}, а также по совместительству в должности \usekomavar{applicant_addition_job} в \usekomavar{applicant_addition_job_place}.
+    \fi
+
+    В \usekomavar{applicant_HE_end_year}~г. окончила \usekomavar{applicant_HE_type} \usekomavar{applicant_excellency} по направлению \usekomavar{applicant_HE_direction_number}  \usekomavar{applicant_HE_direction_title} с присвоением квалификации "\usekomavar{applicant_HE_qualification}". В \usekomavar{applicant_PG_end_year}~г. \usekomavar{applicant_full_name_I} окончила аспирантуру НИЯУ МИФИ по научной специальности \usekomavar{applicant_PG_speciality_number} \usekomavar{applicant_PG_speciality_title} по направлению \usekomavar{applicant_PG_direction_number}
+    \ifnum\theaadiploma=0
+        \usekomavar{applicant_PG_direction_title}.
+    \else
+        \usekomavar{applicant_PG_direction_title} с присвоением диплома об окончании аспирантуры и квалификации «Исследователь. Преподаватель-исследователь».
+    \fi
+
+    Справка о сдаче кандидатских экзаменов выдана отделом аспирантуры НИЯУ МИФИ \usekomavar{applicant_PG_reference_date} года.
+
+    Научный руководитель – \usekomavar{advisor_degree_title} \usekomavar{advisor_name_full}. По основному месту работы \usekomavar{advisor_main_job}, \usekomavar{advisor_main_workplace_division} НИЯУ МИФИ.
+
+    По результатам рассмотрения диссертации \usekomavar{thesis_title} на совместном семинаре кафедры №\usekomavar{seminar_departament_number} \usekomavar{seminar_departament_title} и \usekomavar{seminar_faculty} НИЯУ МИФИ от \usekomavar{seminar_date}~г. (Протокол №~\usekomavar{seminar_protocol_number}) принято следующее заключение.
+
+      \vspace{3mm}
+    
+    \textbf{Оценка выполненной соискателем работы}
+    
+    \vspace{3mm}
+
+    Диссертационная работа \usekomavar{applicant_short_name_R} \usekomavar{thesis_title} является законченной научно-квалификационной работой и посвящена решению следующих научных задач: 
+
+    \begin{enumerate}
+        \forloop{ataskscount}{1}{\value{ataskscount} < \value{atasksnumber}}%
+        {%
+            \item \usekomavar{thesis_tasks_\theataskscount}\
+        }
+    \end{enumerate}
+
+    \vspace{3mm}
+
+    \textbf{Личное участие автора в получении результатов научных исследований, изложенных в диссертации}, состоит в следующем:
+
+    \usekomavar{thesis_participation}
+    
+    \vspace{3mm}
+
+    \textbf{Научная новизна} работы состоит в следующем:
+
+    \vspace{3mm}
+
+    \begin{enumerate}
+        \forloop{anoveltycount}{1}{\value{anoveltycount} < \value{anoveltynumber}}%
+        {%
+            \item \usekomavar{thesis_novelty_\theanoveltycount}\
+        }
+    \end{enumerate}
+
+    \vspace{3mm}
+
+    \textbf{Практическая ценность работы:}
+    
+    \begin{enumerate}
+        \forloop{avaluecount}{1}{\value{avaluecount} < \value{avaluenumber}}%
+        {%
+            \item \usekomavar{thesis_value_\theavaluecount}\
+        }
+    \end{enumerate}
+
+    \vspace{3mm}
+
+    \textbf{Положения, выносимые на защиту:}
+    
+    \begin{enumerate}
+        \forloop{aprovisioncount}{1}{\value{aprovisioncount} < \value{aprovisionnumber}}%
+        {%
+            \item \usekomavar{thesis_provision_\theaprovisioncount}\
+        }
+    \end{enumerate}
+
+    \vspace{3mm}
+
+    \textbf{Оценка достоверности и обоснованности научных результатов:}
+
+    \usekomavar{thesis_reliability}
+
+    \vspace{3mm}
+
+    \textbf{Апробация работы}
+
+    \vspace{3mm}
+
+    Основные результаты диссертационной работы были представлены автором на российских и международных конференциях:
+
+    \begin{itemize}
+        \forloop{apccount}{1}{\value{apccount} < \value{acon}}%
+        {%
+            \item \usekomavar{applicant_conference_\theapccount}\
+        }
+    \end{itemize}
+
+    \vspace{3mm}
+
+    \textbf{Специальность, которой соответствует диссертация}
+
+    \vspace{3mm}
+
+    Содержание диссертации соответствует паспорту специальности \usekomavar{applicant_specialty_number}  - \usekomavar{applicant_specialty_title} (\usekomavar{applicant_speciality_type} науки). В соответствии с паспортом специальности, решаемая в диссертации проблема относится к 
+    \ifnum\value{apitemm}>0
+        п.~№\theapitem~«\usekomavar{applicant_speciality_pasport_item_text_1}»,
+        \ifnum\value{apitemmm}>0
+            п.~№\theapitemm~ «\usekomavar{applicant_speciality_pasport_item_text_2}», п.~№\theapitemmm «\usekomavar{applicant_speciality_pasport_item_text_3}».
+        \else
+            п.~№\theapitemm~ «\usekomavar{applicant_speciality_pasport_item_text_2}».
+        \fi
+    \else
+        п.~№\theapitem~ «\usekomavar{applicant_speciality_pasport_item_text_1}».
+    \fi
+    Диссертация написана на высоком научном уровне, характеризуется четкостью представления полученных результатов и проработанностью методов исследования.
+    
+    \vspace{3mm}
+
+    \textbf{Полнота изложения материалов диссертации в публикациях}
+
+    \vspace{3mm}
+    
+    По теме диссертации опубликовано \theaant~\numtotexWorks{\value{aant}}, из которых \theaanr~\numtotexArticles{\value{aanr}} в рецензируемых научных изданиях, включённых в Перечень ВАК и/или базы данных Web of Science или Scopus, имеющих квартили  
+    \ifnum\value{aaq}>0
+        Q1 (\theaaq),
+    \fi
+    \ifnum\value{aaqq}>0
+        Q2 (\theaaqq),
+    \fi
+    \ifnum\value{aaqqq}>0
+        Q3 (\theaaqqq),
+    \fi
+    \ifnum\value{aak}>0
+        К1 (\theaak),
+    \fi
+    \ifnum\value{aakk}>0
+        К2 (\theaakk),
+    \fi
+        \ifnum\value{aakkk}>0
+        К3 (\theaakkk),
+    \fi
+    \ifnum\value{aarid}>0
+        \theaarid~\numtotexCertificate{\value{aarid}} о регистрации программ для ЭВМ (РИД),
+    \fi
+    \theaat~\numtotexThesis{\value{aat}} докладов в сборниках трудов международных и всероссийских конференций, индексируемых в базе данных РИНЦ.
+
+    \vspace{3mm}
+    
+    \textbf{Список статей, опубликованных по теме диссертации в рецензируемых изданиях:}
+
+    \vspace{3mm}
+
+    \begin{enumerate}
+        \forloop{apcount}{1}{\value{apcount} < \value{aanr}}%
+        {%
+            \item \usekomavar{applicant_article_\theapcount} \textbf{\usekomavar{applicant_article_BD_\theapcount}}\
+        }
+        \newcounter{enumtemp}
+        \setcounter{enumtemp}{\theenumi}
+    \end{enumerate}
+
+    \ifnum\value{aarid}>0
+        \vspace{3mm}
+    
+        \textbf{Свидетельства на регистрацию программ для ЭВМ:}
+
+        \vspace{3mm}
+
+        \begin{enumerate}
+            \setcounter{enumi}{\theenumtemp}
+            
+            \forloop{aridcount}{1}{\value{aridcount} < \value{aridc}}%
+                {%
+                    \item \usekomavar{applicant_RID_\thearidcount}\
+                }
+            \setcounter{enumtemp}{\theenumi}
+        \end{enumerate}
+    \fi
+
+    \vspace{3mm}
+
+    \textbf{Публикации в журналах и сборниках трудов международных конференций:}
+
+    \vspace{3mm}
+
+    \begin{enumerate}
+        \setcounter{enumi}{\theenumtemp}
+        
+        \forloop{atcount}{1}{\value{atcount} < \value{atnumber}}%
+            {%
+                \item \usekomavar{applicant_thesis_\theatcount}\
+            }
+        \setcounter{enumtemp}{\theenumi}
+    \end{enumerate}
+
+    \vspace{3mm}
+
+    \textbf{Личный вклад автора} в работах, опубликованных в соавторстве, составляют следующие результаты:
+
+    \vspace{3mm}
+
+    \begin{enumerate}
+        \forloop{acontrcount}{1}{\value{acontrcount} < \value{aanr}}%
+            {%
+                \item \usekomavar{applicant_article_contribution_\theacontrcount}\
+            }
+    \end{enumerate}
+
+    \vspace{3mm}
+    
+    Содержание диссертации и основные положения, выносимые на защиту, отражают персональный вклад автора в опубликованные работы. В опубликованных автором работах \textbf{полно отражены} основные результаты и положения диссертации.
+
+    Диссертация \usekomavar{applicant_full_name_R} \usekomavar{thesis_title} является законченной научно-квалификационной задачей, выполненной на высоком уровне, и удовлетворяет требованиям действующего Положения о присуждении ученых степеней в НИЯУ МИФИ, предъявляемым к кандидатским диссертациям, а её автор заслуживает присуждения ученой степени \usekomavar{degree_R} по специальности \usekomavar{applicant_specialty_number} – \usekomavar{applicant_specialty_title} за \usekomavar{achievement}.
+
+    \vspace{3mm}
+
+    \textbf{Принято следующее решение}
+    
+    \vspace{3mm}
+
+    Диссертация \usekomavar{applicant_full_name_R} \usekomavar{thesis_title} \textbf{рекомендуется} к защите на соискание ученой степени \usekomavar{degree_R} по специальности \usekomavar{applicant_specialty_number} – \usekomavar{applicant_specialty_title}.
+
+    Диссертация \usekomavar{thesis_title} \usekomavar{applicant_full_name_R} и заключение по ней заслушаны и одобрены на совместном семинаре кафедры №\usekomavar{seminar_departament_number} \usekomavar{seminar_departament_title} и \usekomavar{seminar_faculty} НИЯУ МИФИ (присутствовало на заседании \thezakltotal~чел., результаты голосования: «за» -- \thezaklyes~чел., «против» -- \thezaklno~чел., «воздержалось» -- \thezaklun~чел., протокол кафедры №~\usekomavar{seminar_protocol_number} от \usekomavar{seminar_date}~г.).
+
+
+    \begin{table}[!htp]
+        \begin{tabular}{lcrl}
+
+            Заведующий кафедрой & & & \\ 
+            \usekomavar{seminar_departament_title} & & & \\
+            НИЯУ МИФИ & & & \\
+            \usekomavar{departament_head_degree} & & \uline{\hspace{6em}} & \usekomavar{departament_head_name} \\
+
+            & & & \\
+            
+            Директор \usekomavar{seminar_faculty} & & & \\ 
+            \usekomavar{faculty_head_degree} & & \uline{\hspace{6em}} & \usekomavar{faculty_head_name} \\
+
+            & & & \\
+
+            Председатель Совета по аттестации и & & & \\
+            подготовке научно-педагогических кадров  & & & \\
+            НИЯУ МИФИ & & & \\
+            д.ф.-м.н., профессор & &
+            \uline{\hspace{6em}} & Кудряшов~Н.А. \\
+        \end{tabular}
+    \end{table}  
+
+        
+    
+    

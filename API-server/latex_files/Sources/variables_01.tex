@@ -1,0 +1,315 @@
+% 2 Заключение организации
+    \newkomavar{applicant_department_number}
+    \newkomavar{applicant_department_title}
+    \newkomavar{applicant_PG_study}
+    \newkomavar{applicant_job_organisation}
+    \newkomavar{applicant_main_job}
+    \newkomavar{applicant_job_department_number}
+    \newkomavar{applicant_job_department_title}
+    \newcounter{aajob}
+    \newkomavar{applicant_addition_job}
+    \newkomavar{applicant_addition_job_place}
+    \newkomavar{applicant_HE_type}
+    \newkomavar{applicant_HE_qualification}
+    \newkomavar{applicant_excellency}
+    \newkomavar{applicant_HE_end_year}
+    \newkomavar{applicant_HE_direction_number}
+    \newkomavar{applicant_HE_direction_title}
+    \newkomavar{applicant_PG_end_year}
+    \newkomavar{applicant_PG_direction_number}
+    \newkomavar{applicant_PG_direction_title}
+    \newkomavar{applicant_PG_speciality_number}
+    \newkomavar{applicant_PG_speciality_title}
+    \newkomavar{applicant_speciality_type}
+    \newcounter{apitem}
+    \newkomavar{applicant_speciality_pasport_item_text_1}
+    \newcounter{apitemm}
+    \newkomavar{applicant_speciality_pasport_item_text_2}
+    \newcounter{apitemmm}
+    \newkomavar{applicant_speciality_pasport_item_text_3}
+    \newcounter{aadiploma} % 0 if no, 1 if exist
+    \newkomavar{applicant_PG_reference_date}
+    \newkomavar{seminar_departament_number}
+    \newkomavar{seminar_departament_title}
+    \newkomavar{seminar_faculty}
+    \newkomavar{seminar_protocol_number}
+    \newkomavar{seminar_date}
+    \newkomavar{achievement}
+    \newcounter{zakltotal}
+    \newcounter{zaklyes}
+    \newcounter{zaklno}
+    \newcounter{zaklun}
+    \newkomavar{departament_head_degree}
+    \newkomavar{departament_head_name}
+    \newkomavar{faculty_head_degree}
+    \newkomavar{faculty_head_name}
+
+    % Tasks
+        \newcounter{ataskscount}
+        \newcounter{atasksnumber}
+        \newkomavar{thesis_tasks_1}
+        \newkomavar{thesis_tasks_2}
+        \newkomavar{thesis_tasks_3}
+        \newkomavar{thesis_tasks_4}
+        \newkomavar{thesis_tasks_5}
+        \newkomavar{thesis_tasks_6}
+        \newkomavar{thesis_tasks_7}
+        \newkomavar{thesis_tasks_8}
+
+    % Personal participation
+        \newkomavar{thesis_participation}
+
+    % Scientific novelty
+        \newcounter{anoveltycount}
+        \newcounter{anoveltynumber}
+        \newkomavar{thesis_novelty_1}
+        \newkomavar{thesis_novelty_2}
+        \newkomavar{thesis_novelty_3}
+        \newkomavar{thesis_novelty_4}
+        \newkomavar{thesis_novelty_5}
+        \newkomavar{thesis_novelty_6}
+
+    % Practical value 
+        \newcounter{avaluecount}
+        \newcounter{avaluenumber}
+        \newkomavar{thesis_value_1}
+        \newkomavar{thesis_value_2}
+        \newkomavar{thesis_value_3}
+        \newkomavar{thesis_value_4}
+        \newkomavar{thesis_value_5}
+        \newkomavar{thesis_value_6}
+
+    % Provisions-to-defend
+        \newcounter{aprovisioncount}
+        \newcounter{aprovisionnumber}
+        \newkomavar{thesis_provision_1}
+        \newkomavar{thesis_provision_2}
+        \newkomavar{thesis_provision_3}
+        \newkomavar{thesis_provision_4}
+        \newkomavar{thesis_provision_5}
+        \newkomavar{thesis_provision_6}
+
+    % Reliability of results
+        \newkomavar{thesis_reliability}
+
+    % Publications numbers
+        \newcounter{aaq} % applicant articles Q1
+        \newcounter{aaqq} % applicant articles Q2
+        \newcounter{aaqqq} % applicant articles Q3
+        \newcounter{aak} % applicant articles K1
+        \newcounter{aakk} % applicant articles K2
+        \newcounter{aakkk} % applicant articles K3
+        \newcounter{aarid} % applicant RID
+        \newcounter{aat} % applicant thesises
+        \newcounter{acon} % aplicant conferences
+        \newcounter{aant} % applicant artciles number total by integer
+        \newcounter{aanr} % applicant artciles number rewieved by integer 
+
+    % Articles
+        \newcounter{apcount}
+        \newcounter{apnrc}
+        \newcounter{acontrcount}
+        \newkomavar{applicant_article_1}
+        \newkomavar{applicant_article_BD_1}
+        \newkomavar{applicant_article_contribution_1}
+        \newkomavar{applicant_article_2}
+        \newkomavar{applicant_article_BD_2}
+        \newkomavar{applicant_article_contribution_2}
+        \newkomavar{applicant_article_3}
+        \newkomavar{applicant_article_BD_3}
+        \newkomavar{applicant_article_contribution_3}
+        \newkomavar{applicant_article_4}
+        \newkomavar{applicant_article_BD_4}
+        \newkomavar{applicant_article_contribution_4}
+        \newkomavar{applicant_article_5}
+        \newkomavar{applicant_article_BD_5}
+        \newkomavar{applicant_article_contribution_5}
+        \newkomavar{applicant_article_6}
+        \newkomavar{applicant_article_BD_6}
+        \newkomavar{applicant_article_contribution_6}
+        \newkomavar{applicant_article_7}
+        \newkomavar{applicant_article_BD_7}
+        \newkomavar{applicant_article_contribution_7}
+        \newkomavar{applicant_article_8}
+        \newkomavar{applicant_article_BD_8}
+        \newkomavar{applicant_article_contribution_8}
+        \newkomavar{applicant_article_9}
+        \newkomavar{applicant_article_BD_9}
+        \newkomavar{applicant_article_contribution_9}
+        \newkomavar{applicant_article_10}
+        \newkomavar{applicant_article_BD_10}
+        \newkomavar{applicant_article_contribution_10}
+        \newkomavar{applicant_article_11}
+        \newkomavar{applicant_article_BD_11}
+        \newkomavar{applicant_article_contribution_11}
+        \newkomavar{applicant_article_12}
+        \newkomavar{applicant_article_BD_12}
+        \newkomavar{applicant_article_contribution_12}
+        \newkomavar{applicant_article_13}
+        \newkomavar{applicant_article_BD_13}
+        \newkomavar{applicant_article_contribution_13}
+        \newkomavar{applicant_article_14}
+        \newkomavar{applicant_article_BD_14}
+        \newkomavar{applicant_article_contribution_14}
+        \newkomavar{applicant_article_15}
+        \newkomavar{applicant_article_BD_15}
+        \newkomavar{applicant_article_contribution_15}
+        \newkomavar{applicant_article_16}
+        \newkomavar{applicant_article_BD_16}
+        \newkomavar{applicant_article_contribution_16}
+
+    % Conferences
+        \newcounter{apcnumber}
+        \newcounter{apccount}
+        \newkomavar{applicant_conference_1}
+        \newkomavar{applicant_conference_2}
+        \newkomavar{applicant_conference_3}
+        \newkomavar{applicant_conference_4}
+        \newkomavar{applicant_conference_5}
+        \newkomavar{applicant_conference_6}
+        \newkomavar{applicant_conference_7}
+        \newkomavar{applicant_conference_8}
+        \newkomavar{applicant_conference_9}
+        \newkomavar{applicant_conference_10}
+        \newkomavar{applicant_conference_11}
+        \newkomavar{applicant_conference_12}
+        \newkomavar{applicant_conference_13}
+        \newkomavar{applicant_conference_14}
+        \newkomavar{applicant_conference_15}
+        \newkomavar{applicant_conference_16}
+        \newkomavar{applicant_conference_17}
+        \newkomavar{applicant_conference_18}
+        \newkomavar{applicant_conference_19}
+        \newkomavar{applicant_conference_20}
+        \newkomavar{applicant_conference_21}
+        \newkomavar{applicant_conference_22}
+        \newkomavar{applicant_conference_23}
+        \newkomavar{applicant_conference_24}
+        \newkomavar{applicant_conference_25}
+        \newkomavar{applicant_conference_26}
+        \newkomavar{applicant_conference_27}
+        \newkomavar{applicant_conference_28}
+        \newkomavar{applicant_conference_29}
+        \newkomavar{applicant_conference_30}
+
+    % Thesises
+        \newcounter{atnumber}
+        \newcounter{atcount}
+        \newkomavar{applicant_thesis_1}
+        \newkomavar{applicant_thesis_2}
+        \newkomavar{applicant_thesis_3}
+        \newkomavar{applicant_thesis_4}
+        \newkomavar{applicant_thesis_5}
+        \newkomavar{applicant_thesis_6}
+        \newkomavar{applicant_thesis_7}
+        \newkomavar{applicant_thesis_8}
+        \newkomavar{applicant_thesis_9}
+        \newkomavar{applicant_thesis_10}
+        \newkomavar{applicant_thesis_11}
+        \newkomavar{applicant_thesis_12}
+        \newkomavar{applicant_thesis_13}
+        \newkomavar{applicant_thesis_14}
+        \newkomavar{applicant_thesis_15}
+        \newkomavar{applicant_thesis_16}
+        \newkomavar{applicant_thesis_17}
+        \newkomavar{applicant_thesis_18}
+        \newkomavar{applicant_thesis_19}
+        \newkomavar{applicant_thesis_20}
+        \newkomavar{applicant_thesis_21}
+        \newkomavar{applicant_thesis_22}
+        \newkomavar{applicant_thesis_23}
+        \newkomavar{applicant_thesis_24}
+        \newkomavar{applicant_thesis_25}
+        \newkomavar{applicant_thesis_26}
+        \newkomavar{applicant_thesis_27}
+        \newkomavar{applicant_thesis_28}
+        \newkomavar{applicant_thesis_29}
+        \newkomavar{applicant_thesis_30}
+
+    % RID
+        \newcounter{aridc}
+        \newcounter{aridcount}
+        \newkomavar{applicant_RID_1}
+        \newkomavar{applicant_RID_2}
+        \newkomavar{applicant_RID_3}
+        \newkomavar{applicant_RID_4}
+        \newkomavar{applicant_RID_5}
+
+% 3 Поянительная записка для подписи заключения
+    \newkomavar{planed_defence_date}
+
+% 9 Сведения о научном руководителе
+    \newcounter{aanumber}
+    \newcounter{aacount}
+    \newkomavar{advisor_article_1}
+    \newkomavar{advisor_article_2}
+    \newkomavar{advisor_article_3}
+    \newkomavar{advisor_article_4}
+    \newkomavar{advisor_article_5}
+    \newkomavar{advisor_article_6}
+    \newkomavar{advisor_article_7}
+    \newkomavar{advisor_article_8}
+    \newkomavar{advisor_article_9}
+    \newkomavar{advisor_article_10}
+    \newkomavar{advisor_article_11}
+    \newkomavar{advisor_article_12}
+    \newkomavar{advisor_article_13}
+    \newkomavar{advisor_article_14}
+    \newkomavar{advisor_article_15}
+
+% 11_1 Согласие и данные оппонента 1
+    \newcounter{oanumber}
+    \newcounter{oacount}
+    \newkomavar{opponent1_article_1}
+    \newkomavar{opponent1_article_2}
+    \newkomavar{opponent1_article_3}
+    \newkomavar{opponent1_article_4}
+    \newkomavar{opponent1_article_5}
+    \newkomavar{opponent1_article_6}
+    \newkomavar{opponent1_article_7}
+    \newkomavar{opponent1_article_8}
+    \newkomavar{opponent1_article_9}
+    \newkomavar{opponent1_article_10}
+    \newkomavar{opponent1_article_11}
+    \newkomavar{opponent1_article_12}
+    \newkomavar{opponent1_article_13}
+    \newkomavar{opponent1_article_14}
+    \newkomavar{opponent1_article_15}
+
+% 11_2 Согласие и данные оппонента 2
+    \newcounter{ooanumber}
+    \newcounter{ooacount}
+    \newkomavar{opponent2_article_1}
+    \newkomavar{opponent2_article_2}
+    \newkomavar{opponent2_article_3}
+    \newkomavar{opponent2_article_4}
+    \newkomavar{opponent2_article_5}
+    \newkomavar{opponent2_article_6}
+    \newkomavar{opponent2_article_7}
+    \newkomavar{opponent2_article_8}
+    \newkomavar{opponent2_article_9}
+    \newkomavar{opponent2_article_10}
+    \newkomavar{opponent2_article_11}
+    \newkomavar{opponent2_article_12}
+    \newkomavar{opponent2_article_13}
+    \newkomavar{opponent2_article_14}
+    \newkomavar{opponent2_article_15}
+
+% 11_3 Согласие и данные оппонента 3
+    \newcounter{oooanumber}
+    \newcounter{oooacount}
+    \newkomavar{opponent3_article_1}
+    \newkomavar{opponent3_article_2}
+    \newkomavar{opponent3_article_3}
+    \newkomavar{opponent3_article_4}
+    \newkomavar{opponent3_article_5}
+    \newkomavar{opponent3_article_6}
+    \newkomavar{opponent3_article_7}
+    \newkomavar{opponent3_article_8}
+    \newkomavar{opponent3_article_9}
+    \newkomavar{opponent3_article_10}
+    \newkomavar{opponent3_article_11}
+    \newkomavar{opponent3_article_12}
+    \newkomavar{opponent3_article_13}
+    \newkomavar{opponent3_article_14}
+    \newkomavar{opponent3_article_15}
