@@ -1,8 +1,0 @@
-fastapi
-uvicorn[standard]
-databases[postgresql]
-sqlalchemy
-asyncpg
-psycopg[binary]
-pydantic[email]
-bcrypt
