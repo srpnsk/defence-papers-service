@@ -1,6 +1,28 @@
-from pydantic import *
-from typing import *
-from datetime import *
+from pydantic import BaseModel, Field, EmailStr
+from typing import Optional
+from datetime import date, datetime
+
+class AuthRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserInfo(BaseModel):
+    user_id: int
+    username: str
+
+class UserRegisterRequest(BaseModel):
+    # Данные для таблицы Person
+    last_name: str = Field(..., max_length=64)
+    first_name: str = Field(..., max_length=64)
+    second_name: Optional[str] = Field(None, max_length=64)
+    degree: Optional[str] = None
+    academic_title: Optional[str] = None
+    phone_number: Optional[str] = None
+    specialty_id: Optional[int] = None
+    
+    # Данные для таблицы Users
+    email: EmailStr  # Используем EmailStr (требует pip install pydantic[email])
+    password: str = Field(..., min_length=6)
 
 class ThesisFormData(BaseModel):
     # ========== Диссертационный совет ==========

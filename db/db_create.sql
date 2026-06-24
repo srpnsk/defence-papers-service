@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.person (
     second_name varchar(64),
     degree varchar(128),
     academic_title varchar(128),
-    email varchar(128),
+    email varchar(128) UNIQUE,
     phone_number varchar(64),
     specialty_id bigint REFERENCES public.specialty(id)
 );
@@ -151,6 +151,18 @@ CREATE TABLE IF NOT EXISTS public.thesis_official_opponent (
 CREATE TABLE IF NOT EXISTS public.thesis_leading_organization (
     thesis_id bigint PRIMARY KEY REFERENCES public.thesis(id) ON DELETE CASCADE,
     organization_id bigint NOT NULL REFERENCES public.organization(id)
+);
+
+CREATE TABLE IF NOT EXISTS public.users (
+    id bigserial PRIMARY KEY,
+    person_id bigint REFERENCES public.person(id) NOT NULL,
+    email varchar(128) NOT NULL UNIQUE,
+    hashed_password char(60) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.sessions (
+    session_id UUID PRIMARY KEY,
+    user_id bigint REFERENCES public.users(id) ON DELETE CASCADE NOT NULL
 );
 
 COMMIT;

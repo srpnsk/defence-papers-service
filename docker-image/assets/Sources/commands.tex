@@ -1,0 +1,118 @@
+\newenvironment{tightcenter}{%
+  \setlength\topsep{0pt}
+  \setlength\parskip{0pt}
+  \begin{center}
+}{%
+  \end{center}
+}
+
+\newcounter{pc}
+\newcounter{tc}
+\newcounter{wc}
+\newcounter{ac}
+
+\newcommand\numtotexPeople[1]
+    {%
+    \setcounter{pc}{\intcalcMod{#1}{20}}
+        \ifnum\thepc=0
+            человек%
+        \fi
+        \ifnum\thepc=1
+            человек%
+        \fi
+        \ifnum\thepc>1
+            \ifnum\thepc<5
+                человека%
+            \fi
+        \fi
+        \ifnum\thepc > 4
+            \ifnum\thepc < 21
+                человек%
+            \fi
+        \fi
+    }
+
+\newcommand\numtotexThesis[1]
+    {%
+    \setcounter{tc}{\intcalcMod{#1}{20}}
+        \ifnum\thetc=0
+            тезисов%
+        \fi
+        \ifnum\thetc=1
+            тезис%
+        \fi
+        \ifnum\thetc>1
+            \ifnum\thetc<5
+                тезиса%
+            \fi
+        \fi
+        \ifnum\thetc > 4
+            \ifnum\thetc < 21
+                тезисов%
+            \fi
+        \fi
+    }
+
+\newcommand\numtotexWorks[1]
+    {%
+    \setcounter{wc}{\intcalcMod{#1}{20}}
+        \ifnum\thewc=0
+            работ%
+        \fi
+        \ifnum\thewc=1
+            работа%
+        \fi
+        \ifnum\thewc>1
+            \ifnum\thewc<5
+                работы%
+            \fi
+        \fi
+        \ifnum\thewc > 4
+            \ifnum\thewc < 21
+                работ%
+            \fi
+        \fi
+    }
+
+\newcommand\numtotexArticles[1]
+    {%
+    \setcounter{ac}{\intcalcMod{#1}{20}}
+        \ifnum\theac=0
+            статей%
+        \fi
+        \ifnum\theac=1
+            статья%
+        \fi
+        \ifnum\theac>1
+            \ifnum\theac<5
+                статьи%
+            \fi
+        \fi
+        \ifnum\theac > 4
+            \ifnum\theac < 21
+                статей%
+            \fi
+        \fi
+    }
+
+\newcommand\numtotexCertificate[1]
+    {%
+    \newcounter{cc}
+    \setcounter{cc}{\intcalcMod{#1}{20}}
+        \ifnum\thecc=0
+            сертификатов%
+        \fi
+        \ifnum\thecc=1
+            сертификат%
+        \fi
+        \ifnum\thecc>1
+            \ifnum\thecc<5
+                сертификата%
+            \fi
+        \fi
+        \ifnum\thecc > 4
+            \ifnum\thecc < 21
+                сертификатов%
+            \fi
+        \fi
+    }
