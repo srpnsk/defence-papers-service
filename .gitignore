@@ -1,6 +1,4 @@
 __pycache__/
 \*.pyc
 venv/
-/defence-papers-service/.env
-/.venv/
-/.idea/
+# позже обязательно добавить .env чтобы не пушить секретные херни в репу
