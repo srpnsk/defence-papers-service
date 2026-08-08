@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent # директория 
 
 class Settings(BaseSettings):
 
-    ROJECT_NAME: str = "Document Generator Service"
+    PROJECT_NAME: str = "Document Generator Service"
     TEMPLATES_DIR: str = "./templates"
     OUTPUT_DIR: str = "./tmp/output"
     DEBUG: bool = False
