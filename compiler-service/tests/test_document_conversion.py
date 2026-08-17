@@ -8,6 +8,7 @@ from pypdf import PdfReader
 
 from app.services.document_conversion import PdfConverter
 from app.services.document_conversion import DocxConverter
+from app.services.document_conversion import DocumentReader
 from tests.helpers.html import (
     generate_simple_html,
     generate_html_with_cyrillic,
@@ -135,3 +136,65 @@ class TestDocxConverter(TestCase):
         self.assertIn("Second", table_text)
         self.assertIn("100", table_text)
         self.assertIn("200", table_text)
+
+
+class TestDocumentReader(TestCase):
+    def test_read_html(self):
+        html = generate_simple_html(
+            title="Test document", text="This is a test")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "document.html"
+            path.write_text(html, encoding="utf-8")
+
+            result = DocumentReader.read_html(path)
+            self.assertEqual(result, html)
+
+    def test_read_html_without_html_extension(self):
+        html = generate_simple_html(
+            title="Test document", text="This is a test")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "document"
+            path.write_text(html, encoding="utf-8")
+
+            result = DocumentReader.read_html(path)
+            self.assertEqual(result, html)
+
+    def test_reject_file_with_html_extension_but_invalid_content(self):
+        garbage = """
+        This is not an HTML document.
+        Just some random text.
+        """
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "document.html"
+            path.write_text(garbage, encoding="utf-8")
+
+            with self.assertRaises(ValueError):
+                DocumentReader.read_html(path)
+
+    def test_file_not_found(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "does-not-exist.html"
+
+            with self.assertRaises(FileNotFoundError):
+                DocumentReader.read_html(path)
+
+    def test_path_is_directory(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir)
+
+            with self.assertRaises(ValueError):
+                DocumentReader.read_html(path)
+
+    def test_read_html_with_cyrillic(self):
+        html = generate_html_with_cyrillic()
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "document.html"
+            path.write_text(html, encoding="utf-8")
+
+            result = DocumentReader.read_html(path)
+
+            self.assertIn("Диссертационный совет", result)
+            self.assertIn("русский текст", result)
