@@ -6,6 +6,7 @@ from typing import Type
 from docx import Document
 from htmldocx import HtmlToDocx
 from weasyprint import HTML
+import magic
 
 from app.schemas.documents import DocumentFormat
 
@@ -21,6 +22,13 @@ class DocumentReader:
         if not path.is_file():
             raise ValueError(
                 f"Путь не является файлом: {path}"
+            )
+
+        mime_type = magic.from_file(path, mime=True)
+
+        if mime_type != "text/html":
+            raise ValueError(
+                f"Файл не является HTML документом: {path}"
             )
 
         return path.read_text(encoding="utf-8")
