@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Автореферат диссертации</title>
+
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 20mm 18mm 20mm;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 12pt;
+            line-height: 1;
+            color: #000;
+        }
+
+        p {
+            margin: 0 0 4pt;
+            text-align: justify;
+            text-indent: 10mm;
+        }
+
+        .center {
+            text-align: center;
+            text-indent: 0;
+        }
+
+        .left {
+            text-align: left;
+            text-indent: 0;
+        }
+
+        .right {
+            text-align: right;
+            text-indent: 0;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        h1 {
+            margin: 0 0 12pt;
+            font-size: 14pt;
+            line-height: 1;
+            text-align: center;
+            font-weight: bold;
+            page-break-before: always;
+        }
+
+        ol,
+        ul {
+            margin-top: 0;
+            margin-bottom: 4pt;
+        }
+
+        li {
+            margin-bottom: 4pt;
+            text-align: justify;
+        }
+
+        .title-page {
+            min-height: 100%;
+        }
+
+        .title-university {
+            margin-bottom: 30mm;
+            font-weight: bold;
+            text-align: center;
+            text-indent: 0;
+        }
+
+        .manuscript {
+            text-align: right;
+            text-indent: 0;
+            margin-bottom: 25mm;
+        }
+
+        .author {
+            text-align: center;
+            font-weight: bold;
+            text-indent: 0;
+            margin-bottom: 15mm;
+        }
+
+        .dissertation-title {
+            text-align: center;
+            font-weight: bold;
+            text-indent: 0;
+            margin-bottom: 25mm;
+        }
+
+        .specialty {
+            text-align: center;
+            text-indent: 0;
+            margin-bottom: 35mm;
+        }
+
+        .abstract-title {
+            text-align: center;
+            text-indent: 0;
+            margin-bottom: 5mm;
+        }
+
+        .degree {
+            text-align: center;
+            text-indent: 0;
+            margin-bottom: 35mm;
+        }
+
+        .city-year {
+            text-align: center;
+            text-indent: 0;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10mm 0;
+        }
+
+        .info-table td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .info-label {
+            width: 23%;
+            font-weight: bold;
+        }
+
+        .info-value {
+            width: 77%;
+            padding-left: 5mm !important;
+        }
+
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15mm;
+        }
+
+        .signature-table td {
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .signature-name {
+            width: 40%;
+        }
+
+        .signature-line {
+            width: 30%;
+            text-align: center;
+        }
+
+        .signature-degree {
+            width: 30%;
+            text-align: right;
+        }
+
+        .section-subtitle {
+            font-weight: bold;
+            text-indent: 10mm;
+        }
+
+        .publication-list {
+            margin-left: 8mm;
+        }
+
+        .publication-list li {
+            padding-left: 2mm;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ТИТУЛЬНЫЙ ЛИСТ -->
+
+<section class="title-page">
+
+    <p class="title-university">
+        Национальный исследовательский ядерный университет «МИФИ»
+    </p>
+
+    <p class="manuscript">
+        На правах рукописи
+    </p>
+
+    <p class="author">
+        {{ applicant.full_name }}
+    </p>
+
+    <p class="dissertation-title">
+        {{ dissertation.title }}
+    </p>
+
+    <p class="specialty">
+        {{ dissertation.specialty.code }} –
+        {{ dissertation.specialty.name }}
+    </p>
+
+    <p class="abstract-title">
+        Автореферат<br>
+        диссертации на соискание ученой степени
+    </p>
+
+    <p class="degree">
+        {{ dissertation.degree_genitive }}
+        {{ dissertation.scientific_field_genitive }} наук
+    </p>
+
+    <p class="city-year">
+        Москва {{ dissertation.year }}
+    </p>
+
+</section>
+
+
+<!-- СВЕДЕНИЯ О ДИССЕРТАЦИИ -->
+
+<section class="page-break">
+
+    <p>
+        Работа выполнена в Федеральном государственном автономном
+        образовательном учреждении высшего образования
+        «Национальный исследовательский ядерный университет «МИФИ».
+    </p>
+
+    <table class="info-table">
+
+        <tr>
+            <td class="info-label">
+                Научный<br>
+                руководитель:
+            </td>
+
+            <td class="info-value">
+                <strong>{{ supervisor.full_name }}</strong><br>
+                {{ supervisor.degree }}, {{ supervisor.title }},
+                {{ supervisor.position }},
+                кафедра {{ supervisor.department }}
+                Института {{ supervisor.institute }} НИЯУ МИФИ
+            </td>
+        </tr>
+
+        {% if consultant %}
+        <tr>
+            <td class="info-label">
+                Научный<br>
+                консультант:
+            </td>
+
+            <td class="info-value">
+                <strong>{{ consultant.full_name }}</strong><br>
+                {{ consultant.degree }},
+                {{ consultant.title }},
+                {{ consultant.position }}
+            </td>
+        </tr>
+        {% endif %}
+
+    </table>
+
+
+    <p class="left bold">
+        Официальные оппоненты:
+    </p>
+
+    {% for opponent in opponents %}
+
+    <p class="left">
+        <strong>{{ opponent.full_name }}</strong><br>
+        {{ opponent.degree }}, {{ opponent.title }},
+        {{ opponent.position }},
+        {{ opponent.organization }}
+    </p>
+
+    {% endfor %}
+
+
+    <p>
+        Защита состоится
+        «{{ defence.date.day }}» {{ defence.date.month_genitive }}
+        {{ defence.date.year }} г. в {{ defence.time }}
+        на заседании диссертационного совета
+        «{{ council.code }}»
+        федерального государственного автономного
+        образовательного учреждения высшего образования
+        «Национальный исследовательский ядерный университет «МИФИ»
+        (115409, г. Москва, Каширское шоссе, 31).
+    </p>
+
+    <p>
+        С диссертацией можно ознакомиться в библиотеке НИЯУ МИФИ
+        и на сайте {{ defence.website }} федерального государственного
+        автономного образовательного учреждения высшего образования
+        «Национальный исследовательский ядерный университет «МИФИ».
+    </p>
+
+    <p class="left">
+        Автореферат разослан
+        «{{ abstract.distribution_date.day }}»
+        {{ abstract.distribution_date.month_genitive }}
+        {{ abstract.distribution_date.year }} г.
+    </p>
+
+
+    <table class="signature-table">
+        <tr>
+            <td class="signature-name">
+                Учёный секретарь<br>
+                диссертационного совета {{ council.code }}
+            </td>
+
+            <td class="signature-line">
+                _____________________
+            </td>
+
+            <td class="signature-degree">
+                {{ council.secretary.degree }}<br>
+                {{ council.secretary.full_name_short }}
+            </td>
+        </tr>
+    </table>
+
+</section>
+
+
+<!-- ОБЩАЯ ХАРАКТЕРИСТИКА -->
+
+<section>
+
+    <h1>ОБЩАЯ ХАРАКТЕРИСТИКА РАБОТЫ</h1>
+
+    <p>
+        {{ general_characteristics.introduction }}
+    </p>
+
+    <p class="section-subtitle">
+        Актуальность темы исследования
+    </p>
+
+    <p>
+        {{ general_characteristics.relevance }}
+    </p>
+
+    <p class="section-subtitle">
+        Целью диссертационной работы является
+    </p>
+
+    <p>
+        {{ general_characteristics.goal }}
+    </p>
+
+    <p class="section-subtitle">
+        Задачи исследования
+    </p>
+
+    <p>
+        Для достижения поставленной цели необходимо было
+        решить следующие задачи:
+    </p>
+
+    <ol>
+        {% for task in general_characteristics.tasks %}
+        <li>{{ task }}</li>
+        {% endfor %}
+    </ol>
+
+    <p class="section-subtitle">
+        Научная новизна полученных в диссертации результатов
+    </p>
+
+    <ol>
+        {% for result in general_characteristics.novelty %}
+        <li>{{ result }}</li>
+        {% endfor %}
+    </ol>
+
+    <p class="section-subtitle">
+        Теоретическая и практическая значимость работы
+    </p>
+
+    <ol>
+        {% for item in general_characteristics.significance %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ol>
+
+    <p class="section-subtitle">
+        Методология и методы диссертационного исследования
+    </p>
+
+    <p>
+        {{ general_characteristics.methodology }}
+    </p>
+
+    <p class="section-subtitle">
+        Положения, выносимые на защиту
+    </p>
+
+    <ol>
+        {% for statement in general_characteristics.defence_statements %}
+        <li>{{ statement }}</li>
+        {% endfor %}
+    </ol>
+
+    <p class="section-subtitle">
+        Достоверность результатов диссертации
+    </p>
+
+    <p>
+        {{ general_characteristics.reliability }}
+    </p>
+
+    <p class="section-subtitle">
+        Апробация результатов
+    </p>
+
+    <p>
+        Основные результаты диссертационной работы были представлены
+        автором на российских и международных конференциях:
+    </p>
+
+    <ul>
+        {% for conference in general_characteristics.conferences %}
+        <li>{{ conference }}</li>
+        {% endfor %}
+    </ul>
+
+    <p class="section-subtitle">
+        Публикации в изданиях, индексируемых в базах данных
+        Web of Science и Scopus, рекомендованных ВАК РФ
+    </p>
+
+    <p>
+        {{ general_characteristics.publications_summary }}
+    </p>
+
+    <p class="section-subtitle">
+        Объем и структура работы
+    </p>
+
+    <p>
+        {{ general_characteristics.structure }}
+    </p>
+
+</section>
+
+
+<!-- ОСНОВНОЕ СОДЕРЖАНИЕ -->
+
+<section>
+
+    <h1>ОСНОВНОЕ СОДЕРЖАНИЕ РАБОТЫ</h1>
+
+    {% for chapter in dissertation.chapters %}
+
+    <p>
+        <strong>{{ chapter.name }}</strong>
+        {{ chapter.summary }}
+    </p>
+
+    {% endfor %}
+
+    <p>
+        <strong>В заключении</strong>
+        приведены основные результаты работы,
+        которые заключаются в следующем:
+    </p>
+
+    <ol>
+        {% for result in dissertation.results %}
+        <li>{{ result }}</li>
+        {% endfor %}
+    </ol>
+
+</section>
+
+
+<!-- ПУБЛИКАЦИИ -->
+
+<section>
+
+    <h1>ОСНОВНЫЕ ПУБЛИКАЦИИ ПО ТЕМЕ ДИССЕРТАЦИИ</h1>
+
+    <p>
+        По теме диссертации опубликовано
+        {{ publications.peer_reviewed_count }}
+        статей в рецензируемых научных изданиях,
+        включённых в Перечень ВАК и/или базы данных
+        Web of Science или Scopus.
+    </p>
+
+    <ol class="publication-list">
+
+        {% for publication in publications.peer_reviewed %}
+
+        <li>
+            {{ publication.authors }},
+            {{ publication.title }},
+            {{ publication.journal }},
+            {{ publication.volume }},
+            {{ publication.pages }},
+            {{ publication.year }}.
+            {% if publication.doi %}
+                DOI: {{ publication.doi }}.
+            {% endif %}
+            {{ publication.indexing }}
+        </li>
+
+        {% endfor %}
+
+    </ol>
+
+
+    {% if publications.ip %}
+
+    <p class="section-subtitle">
+        Свидетельства на регистрацию программ для ЭВМ/изобретение
+    </p>
+
+    <ol class="publication-list">
+
+        {% for publication in publications.ip %}
+
+        <li>
+            {{ publication.authors }},
+            {{ publication.title }}.
+        </li>
+
+        {% endfor %}
+
+    </ol>
+
+    {% endif %}
+
+
+    {% if publications.conferences %}
+
+    <p class="section-subtitle">
+        Публикации в журналах и сборниках трудов
+        международных конференций
+    </p>
+
+    <ol class="publication-list">
+
+        {% for publication in publications.conferences %}
+
+        <li>
+            {{ publication.authors }},
+            {{ publication.title }},
+            {{ publication.conference }},
+            {{ publication.pages }},
+            {{ publication.year }}.
+        </li>
+
+        {% endfor %}
+
+    </ol>
+
+    {% endif %}
+
+</section>
+
+</body>
+</html>
