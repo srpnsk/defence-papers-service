@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Идентификационное заключение</title>
+
+    <style>
+        @page {
+            size: A4;
+            margin: 17.5mm 12.5mm 17.5mm 20mm;
+        }
+
+        body {
+            font-family: "Times New Roman", serif;
+            font-size: 12pt;
+            line-height: 1.0;
+            margin: 0;
+            color: #000;
+        }
+
+        p {
+            margin: 0 0 8pt 0;
+            text-align: justify;
+        }
+
+        .center { text-align: center; }
+        .right { text-align: right; }
+        .bold { font-weight: bold; }
+
+        .document-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 0 0 12pt 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 14pt 0 8pt 0;
+            page-break-after: avoid;
+        }
+
+        .subsection-title {
+            font-weight: bold;
+            margin: 10pt 0 6pt 0;
+            page-break-after: avoid;
+        }
+
+        .indent {
+            text-indent: 1.25cm;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8pt 0 12pt 0;
+            page-break-inside: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 4pt 5pt;
+            vertical-align: top;
+        }
+
+        th {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .signature {
+            margin-top: 18pt;
+            width: 100%;
+        }
+
+        .signature td {
+            border: none;
+            padding: 2pt 0;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        .small {
+            font-size: 10pt;
+        }
+    </style>
+</head>
+
+<body>
+
+    <p class="document-title">ИДЕНТИФИКАЦИОННОЕ ЗАКЛЮЧЕНИЕ</p>
+
+    <p class="center">
+        <span class="bold">№ {{ conclusion_number }}</span>
+        -
+        <span class="bold">{{ year_short }}</span>
+        -
+        <span class="bold">{{ organization_inn }}</span>
+    </p>
+
+    <p>
+        <span class="bold">1. Составитель заключения:</span>
+        {{ organization_name }}, {{ organization_address }},
+        тел. {{ organization_phone }}.
+    </p>
+
+    <p>
+        <span class="bold">2. Сведения о внешнеэкономической операции:</span>
+        материалы {{ document_type_genitive }}
+        {{ applicant_full_name_genitive }}
+        «{{ dissertation_title }}»
+        на соискание ученой степени {{ degree_genitive }}
+        по специальности {{ specialty_code }} – {{ specialty_name }},
+        представленные для размещения на официальном сайте НИЯУ МИФИ
+        и Высшей аттестационной комиссии при Министерстве науки
+        и высшего образования Российской Федерации.
+    </p>
+
+    <p>
+        <span class="bold">2.1. Документ, на основании которого осуществляется
+        внешнеэкономическая операция:</span>
+        {{ transaction_document }}
+    </p>
+
+    <p>
+        <span class="bold">2.2. Страна назначения (отправления):</span>
+        {{ destination_country }}
+    </p>
+
+    <p>
+        <span class="bold">2.3. Российский участник внешнеэкономической операции:</span>
+        {{ russian_participant }}
+    </p>
+
+    <p>
+        <span class="bold">2.4. Иностранные участники внешнеэкономической операции</span>
+    </p>
+
+    <p>
+        <span class="bold">2.4.1. Покупатель (продавец):</span>
+        {{ foreign_buyer_seller }}
+    </p>
+
+    <p>
+        <span class="bold">2.4.2. Получатель (отправитель):</span>
+        {{ foreign_recipient_sender }}
+    </p>
+
+    <p>
+        <span class="bold">2.4.3. Иные участники:</span>
+        {{ foreign_other_participants }}
+    </p>
+
+
+    <p class="section-title">
+        3. Сведения об идентифицируемых товарах и идентифицируемых
+        продуктах научно-технической деятельности
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 8%;">N объекта</th>
+                <th style="width: 19%;">Наименование</th>
+                <th style="width: 15%;">Код<br>ТН ВЭД ЕАЭС</th>
+                <th style="width: 58%;">Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in identified_items %}
+            <tr>
+                <td class="center">{{ loop.index }}</td>
+                <td>{{ item.name }}</td>
+                <td class="center">{{ item.tn_ved_code }}</td>
+                <td>{{ item.description }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <p class="section-title">
+        4. Установление соответствия идентифицируемых товаров
+        и идентифицируемых продуктов научно-технической деятельности
+        товарам и технологиям, включенным в контрольные списки
+    </p>
+
+    <p class="subsection-title">
+        4.1. Позиции (пункты) контрольных списков,
+        выбранные для сравнительного анализа
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">№ объекта</th>
+                <th style="width: 12%;">Пункт</th>
+                <th style="width: 12%;">Список</th>
+                <th style="width: 66%;">Описание позиции (пункта)</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for position in control_list_positions %}
+            <tr>
+                <td class="center">{{ position.object_number }}</td>
+                <td class="center">{{ position.point }}</td>
+                <td class="center">{{ position.list_name }}</td>
+                <td>{{ position.description }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="subsection-title">4.2. Результаты сравнительного анализа</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">N объекта</th>
+                <th style="width: 31%;">Характеристики объекта</th>
+                <th style="width: 31%;">Описание позиции (пункта)</th>
+                <th style="width: 28%;">Выводы</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for result in comparison_results %}
+            <tr>
+                <td class="center">{{ result.object_number }}</td>
+                <td>{{ result.object_characteristics }}</td>
+                <td>{{ result.position_description }}</td>
+                <td>{{ result.conclusion }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <p class="section-title">
+        5. Определение действующих в отношении идентифицируемых товаров
+        и идентифицируемых продуктов научно-технической деятельности
+        запретов и ограничений внешнеэкономической деятельности
+    </p>
+
+    <p>
+        <span class="bold">5.1. Применение специальных экономических мер:</span>
+    </p>
+
+    <p>
+        <span class="bold">а) в отношении страны назначения (отправления)</span>
+        {{ economic_measures_destination }}
+    </p>
+
+    <p>
+        <span class="bold">б) в отношении иностранного участника
+        внешнеэкономической операции</span>
+        {{ economic_measures_foreign_participant }}
+    </p>
+
+    <p>
+        <span class="bold">в) в отношении идентифицируемых товаров
+        и идентифицируемых продуктов научно-технической деятельности</span>
+        {{ economic_measures_items }}
+    </p>
+
+    <p>
+        <span class="bold">
+            5.2. Наличие признаков, дающих основания полагать,
+            что идентифицируемые товары и идентифицируемые продукты
+            научно-технической деятельности могут быть использованы
+            в целях создания оружия массового поражения и средств его доставки,
+            иных видов вооружения и военной техники либо приобретаются
+            в интересах организаций или физических лиц, причастных
+            к террористической деятельности:
+        </span>
+        {{ proliferation_risk_result }}
+    </p>
+
+
+    <p class="section-title">
+        6. Общие выводы по результатам идентификации
+    </p>
+
+    <p>{{ identification_conclusion }}</p>
+
+
+    <p class="section-title">7. Дополнительная информация</p>
+
+    <p>
+        Заключение подготовлено экспертной комиссией №
+        {{ commission_number }},
+        председатель комиссии — {{ commission_chairman }},
+        {{ commission_chairman_position }}.
+    </p>
+
+    <table class="signature">
+        <tr>
+            <td style="width: 35%;">_______________</td>
+            <td style="width: 65%;">{{ signer_full_name }}</td>
+        </tr>
+        <tr>
+            <td>(подпись)</td>
+            <td>(инициалы, фамилия)</td>
+        </tr>
+    </table>
+
+    {% if conclusion_date %}
+    <p class="right">{{ conclusion_date }}</p>
+    {% endif %}
+
+</body>
+</html>
