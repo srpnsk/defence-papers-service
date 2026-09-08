@@ -1,3 +1,22 @@
 # defence-papers-service
 
-Document management system for the organization of PhD thesis defense. Unfortunately, any scientific activity is inevitably accompanied by the periodic filling out of piles of documents strictly in accordance with constantly changing forms and lists.
+## Описание / Description
+
+**Document management system for the organization of PhD thesis defense.**  
+Unfortunately, any scientific activity is inevitably accompanied by the periodic filling out of piles of documents strictly in accordance with constantly changing forms and lists.
+
+**Система документооборота для организации защиты кандидатских диссертаций.**  
+К сожалению, любая научная деятельность неизбежно сопряжена с необходимостью периодически заполнять огромные объемы документов, строго соблюдая постоянно меняющиеся формы и перечни.
+
+---
+
+## Суть данной ветки проекта
+
+В ходе работы над данным проектом мы столкнулись с большими трудностями при доведении проекта до ума:
+
+- наполовину навайбкоженный код;
+- изначально неправильная архитектура проекта, породившая много ошибок, которые потом было очень трудно исправить;
+- при исправлении одной ошибки возникал каскад новых;
+- монолитная структура проекта усугубила ситуацию и усложнила отладку проекта.
+
+**Поэтому было решено переписать проект, используя под каждую операцию отдельный микросервис**, чтобы легче было поддерживать проект.
