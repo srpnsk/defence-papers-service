@@ -5,3 +5,6 @@ Document management system for the organization of PhD thesis defense. Unfortuna
 Look at `concepts.md` to know what this project is.
 
 Also, there is `ai_verdict.md` which may help us.
+
+---
+**В папке API-server лежит краткое пояснение** 
