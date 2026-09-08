@@ -1,5 +1,9 @@
 # defence-papers-service
 
+## Пожалуйста, посетите github pages этого проекта
+
+https://srpnsk.github.io/defence-papers-service/
+
 ## Описание / Description
 
 **Document management system for the organization of PhD thesis defense.**  
