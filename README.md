@@ -5,6 +5,10 @@ Document management system for the organization of PhD thesis defense. Unfortuna
 ---
 **В папке API-server лежит краткое пояснение** 
 
+## Пожалуйста, посетите github pages этого проекта
+
+https://srpnsk.github.io/defence-papers-service/
+
 ## Комментарий
 
 Это старая но, хоть как-то рабочая версия, более перспективная структура, которую следует развивать находиться в ветке "test"
